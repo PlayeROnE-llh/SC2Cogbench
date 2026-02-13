@@ -2,10 +2,6 @@
 
 <div align="center">
 
-[![Paper](https://img.shields.io/badge/Paper-Arxiv-red)](https://arxiv.org/abs/2026.xxxxx) 
-[![Dataset](https://img.shields.io/badge/Dataset-HuggingFace-yellow)](https://huggingface.co/datasets/YourOrg/SC2CogBench)
-[![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-blue)](LICENSE)
-
 [**Introduction**](#-introduction) | [**Leaderboard**](#-leaderboard) | [**Dataset**](#-dataset) | [**Evaluation**](#-evaluation) | [**Citation**](#-citation)
 
 </div>
