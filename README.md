@@ -1,160 +1,91 @@
-# SC2-CogBench: Benchmarking Cognitive Strategic Reasoning in Large Language Models through StarCraft II
-
 <div align="center">
 
-[**Introduction**](#-introduction) | [**Leaderboard**](#-leaderboard) | [**Dataset**](#-dataset) | [**Evaluation**](#-evaluation) | [**Citation**](#-citation)
+# <img src="assets/icon.png" width="30" height="30"> SC2-CogBench
+### Benchmarking Cognitive Strategic Reasoning in Large Language Models through StarCraft II
+
+[**Anonymous Authors**]
+
+
 
 </div>
 
 ---
-
-## 📢 News
-* **[2026-02-12]** We released the **SC2-CogBench** paper and dataset! Code is now available.
 
 ## 📖 Introduction
 
-**SC2-CogBench** is the first cognitively grounded benchmark designed to evaluate **Strategic Reasoning** in Large Language Models (LLMs) using the complex adversarial environment of **StarCraft II**. 
+**SC2-CogBench** is the first cognitively grounded benchmark designed to evaluate the **Strategic Reasoning** capabilities of Large Language Models (LLMs) within the complex, adversarial environment of **StarCraft II**. 
 
-Unlike existing benchmarks that focus on end-to-end win rates or simple micro-management, SC2-CogBench decomposes strategic reasoning into three hierarchical cognitive dimensions: **Perception**, **Prediction**, and **Strategy Inference**.
+[cite_start]Unlike prior works that focus on end-to-end outcome assessment (Win/Loss), SC2-CogBench decomposes strategic reasoning into a hierarchical cognitive process: **Perception**, **Prediction**, and **Strategy Inference**[cite: 61, 62].
 
 <div align="center">
-  <img src="assets/framework.png" width="800"/>
+  <img src="assets/framework_v2.png" width="850"/>
   <br>
-  <em>Figure 1: The hierarchical framework of SC2-CogBench.</em>
+  [cite_start]<em>Figure 1: The hierarchical cognitive framework of SC2-CogBench, comprising 7 tasks across 3 dimensions[cite: 180].</em>
 </div>
 
-### Key Features
-* **Real-World Professional Data:** Constructed from 174 Tier-S tournament matches (EWC 2025, DreamHack) with 150 high-quality expert-annotated instances.
-* **Cognitive Hierarchy:** Covers 7 distinct tasks ranging from *Key Event Identification* (KEI) to *Intention Change Detection* (ICD).
-* **Rigorous Metrics:** 27 task-specific metrics including *Effective Inference Yield* (EIY) and *Strategic Intelligence Score* (SSIS).
+### 🌟 Key Features
+* [cite_start]**Real-World Professional Data:** Curated from **174 Tier-S tournament matches** (EWC 2025, DreamHack), capturing authentic high-stakes decision-making[cite: 287].
+* [cite_start]**Granular Diagnosis:** Features **7 distinct tasks** with **27 specialized metrics** to expose specific cognitive bottlenecks[cite: 196].
+* [cite_start]**Expert Annotation:** A hybrid annotation protocol combining 7 human experts (Grandmaster level) and algorithmic grounding (XGBoost Win-Rate Models)[cite: 292, 293].
 
 ---
 
-## 🏆 Leaderboard
+## 🏆 Leaderboard (SOTA Analysis)
 
-We evaluated 6 frontier LLMs (including GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek-V3). Below is the summary performance across three dimensions.
+[cite_start]We evaluated 6 frontier LLMs including **GPT-5**, **Gemini 3 Pro**, and **DeepSeek-V3**[cite: 484]. [cite_start]The results reveal that *no single model successfully completes the full perception-prediction-inference loop*[cite: 198].
 
-| Model | **KEI** (F1) | **CSP** (F1) | **BSS** (Acc) | **DWP** (Acc) | **DWE** (SSIS) | **ICD** (EIY) | **SAP** (PSR) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **GPT-5** | **0.480** | 0.722 | 0.45 | 0.46 | 70.05 | 6.25 | **0.94** |
-| **Gemini 3 Pro** | 0.197 | 0.774 | 0.50 | **0.62** | **79.39** | **18.80** | 0.82 |
-| **Claude 4 Sonnet** | 0.260 | 0.884 | 0.55 | 0.48 | 71.42 | 10.70 | 0.88 |
-| **DeepSeek-V3** | 0.347 | **0.901** | 0.25 | 0.50 | 49.60 | 6.04 | 0.84 |
-| **Qwen 3** | 0.347 | 0.705 | **0.65** | 0.54 | 44.40 | 7.47 | 0.74 |
-| **Kimi K2** | 0.350 | 0.370 | 0.35 | 0.48 | 61.12 | 11.00 | 0.66 |
+| Dimensions | Task | Metric | 🥇 **GPT-5** | 🥈 **Gemini 3 Pro** | 🥉 **Claude 4 Sonnet** | **DeepSeek-V3** | **Qwen 3** |
+| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **Perception** | **KEI** | *F1-Score* | **0.480** | 0.197 | 0.260 | 0.347 | 0.347 |
+| | **CSP** | *F1-Score* | 0.722 | 0.774 | 0.884 | **0.901** | 0.705 |
+| | **BSS** | *Acc@120s* | 0.45 | 0.50 | 0.55 | 0.25 | **0.65** |
+| **Prediction** | **DWP** | *Global Acc* | 0.46 | **0.62** | 0.48 | 0.50 | 0.54 |
+| | **DWE** | *SSIS* | 70.05 | **79.39** | 71.42 | 49.60 | 44.40 |
+| **Inference** | **ICD** | *EIY* | 6.3 | **18.8** | 10.7 | 6.0 | 7.5 |
+| | **SAP** | *PSR* | **0.94** | 0.82 | 0.82 | 0.84 | 0.74 |
 
-> **Analysis:** No single model masters the full loop. **Gemini 3 Pro** excels in predictive foresight (DWP/DWE), while **GPT-5** dominates in structured strategic adherence (SAP) and key event identification (KEI).
+> [cite_start]**Analysis:** > - **Gemini 3 Pro** dominates in **Predictive Reasoning** (DWP/DWE) and **Intention Detection** (ICD), showing superior causal foresight[cite: 568, 571].
+> [cite_start]- **GPT-5** excels in **Execution Compliance** (SAP) and **Event Identification** (KEI), acting as a "Conservative Expert"[cite: 566, 573].
+> [cite_start]- **DeepSeek-V3** demonstrates robust **Perception Coverage** (CSP) but struggles with high-level strategic inference[cite: 498].
 
----
-
-## 📂 Dataset
-
-The dataset is derived from `.SC2Replay` files processed into structured JSON logs.
-
-### Data Structure
-```json
-{
-  "match_id": "EWC2025_Serral_vs_Cure",
-  "duration": 1340,
-  "events": [
-    {"time": 120, "type": "UnitBorn", "unit": "Queen", "pos": [32, 45]},
-    ...
-  ],
-  "annotations": {
-    "kei": [...],
-    "bss_transitions": [300, 850],
-    "winner": "Zerg"
-  }
-}
-```
-
-### Download
-Please download the full dataset from [HuggingFace](https://huggingface.co/datasets/YourOrg/SC2CogBench) and extract it to the `./data` folder.
+<div align="center">
+  <img src="assets/radar_sota.png" width="600"/>
+</div>
 
 ---
 
-## 🛠️ Installation
+## 🧩 Task Taxonomy
 
-1. **Clone the repository**
-   ```bash
-   git clone [https://github.com/YourUsername/SC2CogBench.git](https://github.com/YourUsername/SC2CogBench.git)
-   cd SC2CogBench
-   ```
+SC2-CogBench includes 7 carefully designed tasks. Click below to expand definitions.
 
-2. **Install dependencies**
-   ```bash
-   conda create -n sc2bench python=3.10
-   conda activate sc2bench
-   pip install -r requirements.txt
-   ```
-   *Note: We strictly use `sc2reader` for parsing replay files.*
+<details>
+<summary><strong>👁️ Perception Layer (State Estimation)</strong></summary>
+
+1. [cite_start]**Key Event Identification (KEI):** Filter raw logs to identify pivotal strategic moments (e.g., Tech Pivots, Decisive Engagements)[cite: 374].
+2. [cite_start]**Battle Stage Segmentation (BSS):** Identify objective game phases (Early, Mid, Late) based on economic and tech thresholds[cite: 380].
+3. [cite_start]**Conflict Spatiotemporal Perception (CSP):** Locate conflict events in both time and space from noisy telemetry[cite: 384].
+</details>
+
+<details>
+<summary><strong>🔮 Prediction Layer (Value Function)</strong></summary>
+
+4. [cite_start]**Dynamic Winner Prediction (DWP):** Predict the final winner based on a snapshot of the current state at fixed intervals[cite: 450].
+5. [cite_start]**Dynamic Win-Rate Estimation (DWE):** Generate a continuous, real-time win-probability curve aligned with material reality[cite: 455].
+</details>
+
+<details>
+<summary><strong>🧠 Strategy Inference Layer (Inverse Game Theory)</strong></summary>
+
+6. [cite_start]**Intention Change Detection (ICD):** Reverse-engineer the opponent's latent intent shifts using the *Perception-Inference-Action* chain[cite: 466].
+7. [cite_start]**Strategic Action Prediction (SAP):** Predict the next set of valid strategic actions (Units, Tech, Structure) under partial observability[cite: 471].
+</details>
 
 ---
 
-## 🚀 Evaluation
+## 🛠️ Getting Started
 
-We provide scripts to evaluate models on all 7 tasks.
-
-### 1. Configure API Keys
-Create a `.env` file and add your model API keys:
+### 1. Installation
 ```bash
-OPENAI_API_KEY=sk-...
-GOOGLE_API_KEY=AIza...
-ANTHROPIC_API_KEY=sk-ant...
-```
-
-### 2. Run Perception Tasks (KEI, BSS, CSP)
-```bash
-python -m sc2cogbench.evaluate \
-    --task KEI \
-    --model gpt-5 \
-    --data_path ./data/test_set.json \
-    --output_dir ./results
-```
-
-### 3. Run Strategy Inference Tasks (ICD, SAP)
-```bash
-python -m sc2cogbench.evaluate \
-    --task SAP \
-    --model gemini-3-pro \
-    --cot True \  # Enable Chain-of-Thought
-    --output_dir ./results
-```
-
----
-
-## 📝 Tasks Overview
-
-SC2-CogBench consists of 7 tasks across 3 dimensions:
-
-1.  **Perception Layer**
-    * **KEI (Key Event Identification):** Identify pivotal moments (e.g., tech switches, decisive battles).
-    * **BSS (Battle Stage Segmentation):** Segment game into Early/Mid/Late phases.
-    * **CSP (Conflict Spatiotemporal Perception):** Locate battles in space and time.
-
-2.  **Prediction Layer**
-    * **DWP (Dynamic Winner Prediction):** Predict the winner at fixed intervals (2, 4, 6 min...).
-    * **DWE (Dynamic Win-Rate Estimation):** Generate a real-time win-probability curve.
-
-3.  **Strategy Inference Layer**
-    * **ICD (Intention Change Detection):** Detect shifts in player strategy (e.g., from defensive to aggressive).
-    * **SAP (Strategic Action Prediction):** Predict the next set of strategic actions (tech/units) given the current state.
-
----
-
-## 🖊️ Citation
-
-If you find this work useful, please cite our paper:
-
-```bibtex
-@inproceedings{sc2cogbench2026,
-  title={SC2-CogBench: Benchmarking Cognitive Strategic Reasoning in Large Language Models through StarCraft II},
-  author={Anonymous Authors},
-  booktitle={Proceedings of the 43rd International Conference on Machine Learning (ICML)},
-  year={2026}
-}
-```
-
-## 📄 License
-
-This project is licensed under the [CC BY-NC 4.0](LICENSE) License. Game data remains the property of Blizzard Entertainment.
+git clone [https://github.com/YourRepo/SC2CogBench.git](https://github.com/YourRepo/SC2CogBench.git)
+cd SC2CogBench
+pip install -r requirements.txt
