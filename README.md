@@ -1,11 +1,7 @@
 <div align="center">
 
-<img src="assets/icon.png" alt="SC2CogBench" width="100"/>
-
 # SC2-CogBench
 ### Benchmarking Cognitive Strategic Reasoning in Large Language Models through StarCraft II
-
-[**Anonymous Authors**]
 
 
 
@@ -15,93 +11,138 @@
 
 ## 📖 Introduction
 
-**SC2-CogBench** is the first cognitively grounded benchmark designed to rigorously evaluate the **Strategic Reasoning** capabilities of Large Language Models (LLMs) within the complex, adversarial environment of **StarCraft II**. 
+**SC2-CogBench** is a cognitively motivated benchmark designed to evaluate **Strategic Reasoning** in Large Language Models (LLMs) within the complex, adversarial environment of **StarCraft II**.
 
-[cite_start]Unlike existing benchmarks that focus on simple micro-management or end-to-end outcome assessment, SC2-CogBench leverages **174 professional Tier-S tournament matches** (EWC 2025, DreamHack) [cite: 63, 287] [cite_start]to decompose strategic reasoning into three hierarchical cognitive dimensions: **Perception**, **Prediction**, and **Strategy Inference**[cite: 62].
+Unlike existing benchmarks that focus on simple micro-management or end-to-end outcome assessment, SC2-CogBench leverages **174 professional Tier-S tournament matches** (EWC 2025, DreamHack). It decomposes strategic reasoning into three hierarchical cognitive dimensions: **Perception**, **Prediction**, and **Strategy Inference**.
+
+### 🧩 The Framework
+SC2-CogBench employs **27 task-specific metrics** to capture diverse cognitive demands across the perception-prediction-inference loop.
 
 <div align="center">
-  <img src="assets/framework.png" width="90%"/>
+  <img src="Figures/Figure1_Framework.pdf" alt="Figure 1: Hierarchical Framework" width="95%"/>
   <br>
-  [cite_start]<em>Figure 1: The hierarchical framework of SC2-CogBench, covering 7 tasks and 27 granular metrics. [cite: 180]</em>
+  <em>Figure 1: The hierarchical framework of SC2-CogBench, organized into Perception, Prediction, and Strategy Inference.</em>
 </div>
 
 ---
 
-## 🏆 Comprehensive Leaderboard
+## 🏗️ Data Construction
 
-[cite_start]We evaluated **6 frontier LLMs** (GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek-V3, Qwen 3, Kimi K2)[cite: 484]. [cite_start]The results reveal that **no single model successfully masters the full cognitive loop**[cite: 65, 198].
+The dataset captures the authentic, high-stakes adversarial dynamics of elite human competition. We constructed **150 evaluation instances** with semantically grounded human expert annotations.
 
-### 📊 Main Performance Matrix (Table 2)
-
-| **Dimension** | **Task** | **Metric** | **GPT-5** | **Gemini 3 Pro** | **Claude 4 Sonnet** | **DeepSeek-V3** | **Qwen 3** | **Kimi K2** |
-| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Perception** | **KEI** | *F1-Score* | **0.480** 🥇 | 0.197 | 0.260 | 0.347 | 0.347 | 0.350 |
-| | **CSP** | *F1-Score* | 0.722 | 0.774 | 0.884 | **0.901** 🥇 | 0.705 | 0.370 |
-| | **BSS** | *Acc@120s* | 0.45 | 0.50 | 0.55 | 0.25 | **0.65** 🥇 | 0.35 |
-| **Prediction** | **DWP** | *Global Acc* | 0.46 | **0.62** 🥇 | 0.48 | 0.50 | 0.54 | 0.48 |
-| | **DWE** | *SSIS* | 70.05 | **79.39** 🥇 | 71.42 | 49.60 | 44.40 | 61.12 |
-| **Inference** | **ICD** | *EIY* | 6.25 | **18.80** 🥇 | 10.70 | 6.04 | 7.47 | 11.00 |
-| | **SAP** | *PSR* | **0.94** 🥇 | 0.82 | 0.82 | 0.84 | 0.74 | 0.66 |
-
-> **Metric Key:** **F1**: Harmonic mean of precision/recall; [cite_start]**SSIS**: Strategic Intelligence Score[cite: 1678]; [cite_start]**EIY**: Effective Inference Yield[cite: 1780]; [cite_start]**PSR**: Prediction Success Rate[cite: 1800].
-
----
-
-## 🔬 Detailed Analysis & Conclusions
-
-[cite_start]Our experiments uncover distinct "Strategic Personalities" among the models[cite: 725].
-
-### 👁️ Perception Layer
-* [cite_start]**Semantic Understanding:** **GPT-5** achieves state-of-the-art performance in **KEI** (0.480 F1), effectively filtering noise to identify semantic key events[cite: 566].
-* [cite_start]**Combat Coverage:** **DeepSeek-V3** excels in **CSP** (0.901 F1), demonstrating superior sensitivity in tracking dense combat dynamics[cite: 498].
-* [cite_start]**Temporal Structure:** **Qwen 3** shows the best temporal alignment in **BSS** (lowest error: 150.05s), maintaining a coherent rhythm of game phases[cite: 500].
-
-### 🔮 Prediction Layer (The Foresight Gap)
-* **Genuine Foresight:** **Gemini 3 Pro** is the only model demonstrating true strategic foresight. [cite_start]It dominates both **DWP** (0.62 Acc) and **DWE** (79.39 SSIS)[cite: 568].
-* [cite_start]**Constraint:** Other models like Qwen 3 and Kimi K2 suffer from significant calibration errors ($WCE > 0.28$), relying on visible army count rather than causal reasoning[cite: 569].
-
-### 🧠 Strategy Inference Layer
-* [cite_start]**The "Broad Analyst":** **Gemini 3 Pro** achieves the highest **EIY** (18.8) in Intention Change Detection, effectively balancing the identification of interactive dynamics with validity[cite: 571].
-* [cite_start]**The "Conservative Expert":** **GPT-5** leads in **SAP** (0.94 PSR), showing high adherence to valid build-order logic but remaining conservative in attribution[cite: 573].
-* [cite_start]**Defensive Insight:** **Kimi K2** is the only model where *Loser Efficacy* > *Winner Efficacy*, indicating a specialized ability to understand defensive counter-play[cite: 2140].
+* **Source:** 174 raw matches from 2025 Tier-S Tournaments (EWC & DreamHack).
+* **Annotation:** A hybrid protocol involving 7 human experts and an XGBoost-based Win-Rate Model for objective grounding.
 
 <div align="center">
-  <img src="assets/radar_chart.png" width="60%"/>
+  <img src="Figures/Figure3_Pipeline.pdf" alt="Figure 3: Data Pipeline" width="95%"/>
   <br>
-  [cite_start]<em>Figure 2: Performance radar chart illustrating the heterogeneous capability profiles of the six LLMs. [cite: 182]</em>
+  <em>Figure 3: Data construction pipeline. Raw match data is filtered and annotated by experts to produce high-quality test samples.</em>
 </div>
 
 ---
 
-## 🧩 Task Taxonomy
+## 🏆 Leaderboard & Experimental Results
 
-SC2-CogBench consists of 7 diverse tasks designed to test specific cognitive capabilities.
+We evaluated 6 frontier LLMs: **GPT-5**, **Gemini 3 Pro**, **Claude 4 Sonnet**, **DeepSeek-V3**, **Qwen 3**, and **Kimi K2**.
 
-<details>
-<summary><strong>Click to expand Task Definitions</strong></summary>
+### 🧠 Capability Overview
+Evaluations reveal a highly heterogeneous capability profile. No single model successfully completes the full reasoning loop.
+* **Gemini 3 Pro** excels at predictive reasoning and situational awareness.
+* **GPT-5** performs best in high-level strategic inference and execution.
+* **DeepSeek-V3** demonstrates strong granular perception in combat scenarios.
 
-### 1. Perception
-- [cite_start]**Key Event Identification (KEI):** Filter raw logs to extract pivotal moments (Strategic Inflection, Core Objective Impact)[cite: 374].
-- [cite_start]**Battle Stage Segmentation (BSS):** Identify game phases (Early/Mid/Late) based on economic/tech thresholds[cite: 380].
-- [cite_start]**Conflict Spatiotemporal Perception (CSP):** Locate conflict events in time and space[cite: 384].
+<div align="center">
+  <img src="Figures/Figure2_Results.pdf" alt="Figure 2: Radar Chart and Taxonomy" width="90%"/>
+  <br>
+  <em>Figure 2: Experimental results of six LLMs across Perception, Prediction, and Strategy Inference tasks.</em>
+</div>
 
-### 2. Prediction
-- [cite_start]**Dynamic Winner Prediction (DWP):** Binary prediction of the final winner from a static game state snapshot[cite: 450].
-- [cite_start]**Dynamic Win-Rate Estimation (DWE):** Generate a continuous real-time win-probability curve[cite: 455].
+### 🥇 Summary Scores
+*A high-level comparison of the best performing models across tasks.*
 
-### 3. Strategy Inference
-- [cite_start]**Intention Change Detection (ICD):** Reverse-engineer latent intent shifts using the *Perception-Inference-Action* chain[cite: 466].
-- [cite_start]**Strategic Action Prediction (SAP):** Predict valid strategic actions (Infrastructure, Tech, Units) in the next 90s window[cite: 471].
-</details>
+| Task | Metric | GPT-5 | Gemini-3 | Claude-4 | DeepSeek-V3 | Qwen-3 | Kimi-K2 |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **KEI** | *F1-Score* | **0.480** | 0.197 | 0.260 | 0.347 | 0.347 | 0.350 |
+| **CSP** | *F1-Score* | 75.22 | 83.58 | **88.64** | 87.00 | 67.88 | 38.18 |
+| **BSS** | *Accuracy* | 45 | 50 | 55 | 25 | **65** | 35 |
+| **DWP** | *Accuracy* | 49.15 | **66.05** | 52.95 | 53.00 | 49.35 | 40.20 |
+| **DWE** | *SSIS* | 70.05 | **79.39** | 71.42 | 49.60 | 44.40 | 61.12 |
+| **ICD** | *EIY* | 6.25 | **18.80** | 10.70 | 6.04 | 7.47 | 11.00 |
+| **SAP** | *PSR* | **66.64** | 61.60 | 56.32 | 57.72 | 49.88 | 43.92 |
 
 ---
 
-## 🛠️ Installation & Usage
+### 📊 Detailed Benchmarking (Full Metrics)
 
-### 1. Environment Setup
-```bash
-git clone [https://github.com/YourRepo/SC2CogBench.git](https://github.com/YourRepo/SC2CogBench.git)
-cd SC2CogBench
-conda create -n sc2bench python=3.10
-conda activate sc2bench
-pip install -r requirements.txt
+Below is the complete breakdown of all **27 metrics** across the three cognitive dimensions.
+
+#### 1. Perception Layer
+*Evaluates situational awareness and state abstraction.*
+
+| Task | Metric | GPT-5 | Gemini-3 | Claude-4 | DeepSeek-V3 | Qwen-3 | Kimi-K2 |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **KEI** | Precision | **0.405** | 0.157 | 0.362 | 0.324 | 0.260 | 0.366 |
+| | Recall | 0.728 | **0.738** | 0.220 | 0.552 | 0.551 | 0.353 |
+| | **F1-Score** | **0.480** | 0.197 | 0.260 | 0.347 | 0.347 | 0.350 |
+| | Redundancy $\downarrow$ | **0.595** | 0.842 | 0.638 | 0.676 | 0.740 | 0.635 |
+| | ATE $\downarrow$ | 2.7 | 3.4 | **2.1** | 3.1 | 5.9 | 4.1 |
+| **BSS** | AbsErr $\downarrow$ | 182.90 | 179.65 | 256.85 | 210.55 | **150.05** | 196.30 |
+| | SDRE $\downarrow$ | 0.63 | **0.59** | 0.84 | 0.71 | 0.60 | 0.62 |
+| | OSC $\downarrow$ | 1 | 2 | 4 | **0** | 1 | 2 |
+| | Acc@30 | 0 | **0.25** | 0.20 | 0.15 | 0.15 | 0 |
+| | Acc@60 | 0.5 | 0.25 | **0.35** | 0.15 | 0.30 | 0.15 |
+| | Acc@120 | 0.45 | 0.50 | 0.55 | 0.25 | **0.65** | 0.35 |
+| | T-Bias $\downarrow$ | **-62.85** | -94.75 | -225.3 | -202.7 | -134.5 | -188.5 |
+| **CSP** | Precision | **0.948** | 0.878 | 0.917 | 0.873 | 0.803 | 0.303 |
+| | Recall | 0.583 | 0.692 | 0.853 | **0.929** | 0.628 | 0.474 |
+| | **F1-Score** | 0.722 | 0.774 | 0.884 | **0.901** | 0.705 | 0.370 |
+| | TPC | 0.801 | **0.942** | 0.897 | 0.835 | 0.658 | 0.412 |
+| | SPC | 0.794 | **0.915** | 0.883 | 0.812 | 0.621 | 0.387 |
+
+#### 2. Prediction Layer
+*Assess the capacity for forward-looking reasoning and outcome forecasting.*
+
+| Task | Metric | GPT-5 | Gemini-3 | Claude-4 | DeepSeek-V3 | Qwen-3 | Kimi-K2 |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **DWP** | Acc (t=2) | 0.40 | **0.60** | 0.30 | 0.40 | 0.50 | 0.20 |
+| | Acc (t=4) | 0.50 | **0.60** | 0.40 | 0.50 | 0.20 | 0.30 |
+| | Acc (t=6) | 0.40 | **0.70** | 0.60 | 0.40 | 0.60 | 0.50 |
+| | Acc (t=8) | 0.50 | 0.70 | 0.70 | 0.60 | 0.80 | **1.00** |
+| | Acc (t=10) | 0.50 | 0.50 | 0.40 | **0.60** | **0.60** | 0.40 |
+| | EGF | 0.45 | **0.60** | 0.35 | 0.45 | 0.35 | 0.25 |
+| | LGR | 0.50 | 0.60 | 0.55 | 0.60 | **0.70** | **0.70** |
+| | PSS | 0.575 | **0.775** | **0.775** | 0.650 | 0.575 | 0.450 |
+| | **Global Acc** | 0.46 | **0.62** | 0.48 | 0.50 | 0.54 | 0.48 |
+| **DWE** | **SSIS** | 70.05 | **79.39** | 71.42 | 49.60 | 44.40 | 61.12 |
+| | ZA | 0.584 | **0.806** | 0.619 | 0.354 | 0.360 | 0.544 |
+| | FA | **0.90** | **0.90** | **0.90** | 0.60 | 0.50 | 0.70 |
+| | BAS $\downarrow$ | 0.155 | **0.131** | 0.152 | 0.211 | 0.233 | 0.167 |
+| | WCE $\downarrow$ | 0.242 | **0.214** | 0.240 | 0.286 | 0.312 | 0.247 |
+
+#### 3. Strategy Inference Layer
+*Reasoning about latent intent and policy selection.*
+
+| Task | Metric | GPT-5 | Gemini-3 | Claude-4 | DeepSeek-V3 | Qwen-3 | Kimi-K2 |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **ICD** | GTR | 0.33 | 0.64 | 0.58 | 0.43 | **0.78** | 0.52 |
+| | WinEff | **0.66** | 0.46 | 0.54 | 0.45 | 0.42 | 0.45 |
+| | LoseEff | **0.59** | 0.48 | 0.53 | 0.42 | 0.44 | 0.50 |
+| | **EIY** $\uparrow$ | 6.25 | **18.8** | 10.7 | 6.04 | 7.47 | 11.00 |
+| **SAP** | F1-Score | **0.242** | 0.220 | 0.196 | 0.201 | 0.169 | 0.146 |
+| | Precision | **0.273** | 0.254 | 0.222 | 0.235 | 0.198 | 0.160 |
+| | Recall | **0.219** | 0.195 | 0.177 | 0.178 | 0.151 | 0.135 |
+| | **PSR** | **0.94** | 0.88 | 0.82 | 0.84 | 0.74 | 0.66 |
+
+---
+
+## 🖊️ Citation
+
+If you use SC2-CogBench in your research, please cite our paper:
+
+```bibtex
+@inproceedings{sc2cogbench2026,
+  title={SC2-CogBench: Benchmarking Cognitive Strategic Reasoning in Large Language Models through StarCraft II},
+  author={Anonymous Authors},
+  booktitle={Under Review},
+  year={2026}
+}
