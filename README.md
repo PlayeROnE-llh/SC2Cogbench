@@ -3,8 +3,6 @@
 # SC2-CogBench
 ### Benchmarking Cognitive Strategic Reasoning in Large Language Models through StarCraft II
 
-
-
 </div>
 
 ---
@@ -19,7 +17,7 @@ Unlike existing benchmarks that focus on simple micro-management or end-to-end o
 SC2-CogBench employs **27 task-specific metrics** to capture diverse cognitive demands across the perception-prediction-inference loop.
 
 <div align="center">
-  <img src="Figures/Figure1_Framework.pdf" alt="Figure 1: Hierarchical Framework" width="95%"/>
+  <img src="Figures/Figure1_Framework.png" alt="Figure 1: Hierarchical Framework" width="100%"/>
   <br>
   <em>Figure 1: The hierarchical framework of SC2-CogBench, organized into Perception, Prediction, and Strategy Inference.</em>
 </div>
@@ -34,9 +32,9 @@ The dataset captures the authentic, high-stakes adversarial dynamics of elite hu
 * **Annotation:** A hybrid protocol involving 7 human experts and an XGBoost-based Win-Rate Model for objective grounding.
 
 <div align="center">
-  <img src="Figures/Figure3_Pipeline.pdf" alt="Figure 3: Data Pipeline" width="95%"/>
+  <img src="Figures/Figure3_Pipeline.png" alt="Figure 3: Data Pipeline" width="100%"/>
   <br>
-  <em>Figure 3: Data construction pipeline. Raw match data is filtered and annotated by experts to produce high-quality test samples.</em>
+  <em>Figure 3: SC2-CogBench is constructed from the latest 2025 match data, filtered and annotated by experts.</em>
 </div>
 
 ---
@@ -47,24 +45,21 @@ We evaluated 6 frontier LLMs: **GPT-5**, **Gemini 3 Pro**, **Claude 4 Sonnet**, 
 
 ### 🧠 Capability Overview
 Evaluations reveal a highly heterogeneous capability profile. No single model successfully completes the full reasoning loop.
-* **Gemini 3 Pro** excels at predictive reasoning and situational awareness.
-* **GPT-5** performs best in high-level strategic inference and execution.
-* **DeepSeek-V3** demonstrates strong granular perception in combat scenarios.
 
 <div align="center">
-  <img src="Figures/Figure2_Results.pdf" alt="Figure 2: Radar Chart and Taxonomy" width="90%"/>
+  <img src="Figures/Figure2_Results.png" alt="Figure 2: Radar Chart" width="80%"/>
   <br>
   <em>Figure 2: Experimental results of six LLMs across Perception, Prediction, and Strategy Inference tasks.</em>
 </div>
 
 ### 🥇 Summary Scores
-*A high-level comparison of the best performing models across tasks.*
+*A high-level comparison of the best performing models across tasks (derived from Table 2).*
 
 | Task | Metric | GPT-5 | Gemini-3 | Claude-4 | DeepSeek-V3 | Qwen-3 | Kimi-K2 |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **KEI** | *F1-Score* | **0.480** | 0.197 | 0.260 | 0.347 | 0.347 | 0.350 |
 | **CSP** | *F1-Score* | 75.22 | 83.58 | **88.64** | 87.00 | 67.88 | 38.18 |
-| **BSS** | *Accuracy* | 45 | 50 | 55 | 25 | **65** | 35 |
+| **BSS** | *Accuracy* | 45 | 50 | **55** | 25 | **65** | 35 |
 | **DWP** | *Accuracy* | 49.15 | **66.05** | 52.95 | 53.00 | 49.35 | 40.20 |
 | **DWE** | *SSIS* | 70.05 | **79.39** | 71.42 | 49.60 | 44.40 | 61.12 |
 | **ICD** | *EIY* | 6.25 | **18.80** | 10.70 | 6.04 | 7.47 | 11.00 |
@@ -83,7 +78,7 @@ Below is the complete breakdown of all **27 metrics** across the three cognitive
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **KEI** | Precision | **0.405** | 0.157 | 0.362 | 0.324 | 0.260 | 0.366 |
 | | Recall | 0.728 | **0.738** | 0.220 | 0.552 | 0.551 | 0.353 |
-| | **F1-Score** | **0.480** | 0.197 | 0.260 | 0.347 | 0.347 | 0.350 |
+| | F1-Score | **0.480** | 0.197 | 0.260 | 0.347 | 0.347 | 0.350 |
 | | Redundancy $\downarrow$ | **0.595** | 0.842 | 0.638 | 0.676 | 0.740 | 0.635 |
 | | ATE $\downarrow$ | 2.7 | 3.4 | **2.1** | 3.1 | 5.9 | 4.1 |
 | **BSS** | AbsErr $\downarrow$ | 182.90 | 179.65 | 256.85 | 210.55 | **150.05** | 196.30 |
@@ -95,7 +90,7 @@ Below is the complete breakdown of all **27 metrics** across the three cognitive
 | | T-Bias $\downarrow$ | **-62.85** | -94.75 | -225.3 | -202.7 | -134.5 | -188.5 |
 | **CSP** | Precision | **0.948** | 0.878 | 0.917 | 0.873 | 0.803 | 0.303 |
 | | Recall | 0.583 | 0.692 | 0.853 | **0.929** | 0.628 | 0.474 |
-| | **F1-Score** | 0.722 | 0.774 | 0.884 | **0.901** | 0.705 | 0.370 |
+| | F1-Score | 0.722 | 0.774 | 0.884 | **0.901** | 0.705 | 0.370 |
 | | TPC | 0.801 | **0.942** | 0.897 | 0.835 | 0.658 | 0.412 |
 | | SPC | 0.794 | **0.915** | 0.883 | 0.812 | 0.621 | 0.387 |
 
@@ -104,15 +99,15 @@ Below is the complete breakdown of all **27 metrics** across the three cognitive
 
 | Task | Metric | GPT-5 | Gemini-3 | Claude-4 | DeepSeek-V3 | Qwen-3 | Kimi-K2 |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **DWP** | Acc (t=2) | 0.40 | **0.60** | 0.30 | 0.40 | 0.50 | 0.20 |
-| | Acc (t=4) | 0.50 | **0.60** | 0.40 | 0.50 | 0.20 | 0.30 |
-| | Acc (t=6) | 0.40 | **0.70** | 0.60 | 0.40 | 0.60 | 0.50 |
-| | Acc (t=8) | 0.50 | 0.70 | 0.70 | 0.60 | 0.80 | **1.00** |
-| | Acc (t=10) | 0.50 | 0.50 | 0.40 | **0.60** | **0.60** | 0.40 |
+| **DWP** | Acct=2 | 0.40 | **0.60** | 0.30 | 0.40 | 0.50 | 0.20 |
+| | Acct=4 | 0.50 | **0.60** | 0.40 | 0.50 | 0.20 | 0.30 |
+| | Acct=6 | 0.40 | **0.70** | 0.60 | 0.40 | 0.60 | 0.50 |
+| | Acct=8 | 0.50 | 0.70 | 0.70 | 0.60 | 0.80 | **1.00** |
+| | Acct=10 | 0.50 | 0.50 | 0.40 | **0.60** | **0.60** | 0.40 |
 | | EGF | 0.45 | **0.60** | 0.35 | 0.45 | 0.35 | 0.25 |
 | | LGR | 0.50 | 0.60 | 0.55 | 0.60 | **0.70** | **0.70** |
 | | PSS | 0.575 | **0.775** | **0.775** | 0.650 | 0.575 | 0.450 |
-| | **Global Acc** | 0.46 | **0.62** | 0.48 | 0.50 | 0.54 | 0.48 |
+| | Global Acc | 0.46 | **0.62** | 0.48 | 0.50 | 0.54 | 0.48 |
 | **DWE** | **SSIS** | 70.05 | **79.39** | 71.42 | 49.60 | 44.40 | 61.12 |
 | | ZA | 0.584 | **0.806** | 0.619 | 0.354 | 0.360 | 0.544 |
 | | FA | **0.90** | **0.90** | **0.90** | 0.60 | 0.50 | 0.70 |
