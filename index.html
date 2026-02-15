@@ -1,1 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SC2-CogBench Leaderboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* 自定义滚动条 */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 4px;
+        }
+        .gold-trophy { color: #eab308; }
+        .silver-trophy { color: #94a3b8; }
+        .bronze-trophy { color: #b45309; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
 
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                        SC2-CogBench
+                    </span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="https://arxiv.org/abs/2026.xxxxx" target="_blank" class="text-slate-600 hover:text-blue-600 transition"><i class="fas fa-file-pdf mr-1"></i> Paper</a>
+                    <a href="https://github.com/YourUsername/SC2CogBench" target="_blank" class="text-slate-600 hover:text-blue-600 transition"><i class="fab fa-github mr-1"></i> Code</a>
+                    <a href="https://huggingface.co/datasets/YourOrg/SC2CogBench" target="_blank" class="text-slate-600 hover:text-blue-600 transition"><i class="fas fa-database mr-1"></i> Dataset</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="bg-white py-12 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl font-extrabold text-slate-900 mb-4">
+                Benchmarking Cognitive Strategic Reasoning<br>in Large Language Models
+            </h1>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto">
+                The first cognitively grounded benchmark derived from <b>174 Tier-S StarCraft II matches</b>. 
+                Evaluating LLMs across <b>Perception</b>, <b>Prediction</b>, and <b>Strategy Inference</b> through 7 distinct tasks.
+            </p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-xl font-bold mb-6 flex items-center">
+                <i class="fas fa-chart-radar text-blue-600 mr-2"></i> Model Capability Analysis (Radar Chart)
+            </h2>
+            <div class="w-full md:w-2/3 mx-auto h-[400px]">
+                <canvas id="radarChart"></canvas>
+            </div>
+            <p class="text-center text-sm text-slate-500 mt-4">
+                *Comparison of 6 frontier LLMs across 7 tasks. Normalized scores based on Summary metrics.
+            </p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-6 border-b border-slate-200 flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">🏆 Main Leaderboard</h2>
+                    <p class="text-sm text-slate-500">Based on Table 2 Summary Scores. Click headers to sort.</p>
+                </div>
+                <div class="flex gap-2 text-xs font-medium">
+                    <span class="px-2 py-1 bg-green-100 text-green-700 rounded border border-green-200">Perception</span>
+                    <span class="px-2 py-1 bg-red-100 text-red-700 rounded border border-red-200">Prediction</span>
+                    <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded border border-yellow-200">Inference</span>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto table-container">
+                <table class="w-full text-sm text-left text-slate-600" id="leaderboardTable">
+                    <thead class="text-xs text-slate-700 uppercase bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 cursor-pointer hover:bg-slate-100" onclick="sortTable(0)">Model <i class="fas fa-sort ml-1 text-slate-400"></i></th>
+                            <th scope="col" class="px-6 py-3 text-green-700 cursor-pointer hover:bg-green-50" onclick="sortTable(1)">KEI (F1) <i class="fas fa-sort ml-1"></i></th>
+                            <th scope="col" class="px-6 py-3 text-green-700 cursor-pointer hover:bg-green-50" onclick="sortTable(2)">CSP (F1) <i class="fas fa-sort ml-1"></i></th>
+                            <th scope="col" class="px-6 py-3 text-green-700 cursor-pointer hover:bg-green-50" onclick="sortTable(3)">BSS (Acc) <i class="fas fa-sort ml-1"></i></th>
+                            <th scope="col" class="px-6 py-3 text-red-700 cursor-pointer hover:bg-red-50" onclick="sortTable(4)">DWP (Acc) <i class="fas fa-sort ml-1"></i></th>
+                            <th scope="col" class="px-6 py-3 text-red-700 cursor-pointer hover:bg-red-50" onclick="sortTable(5)">DWE (SSIS) <i class="fas fa-sort ml-1"></i></th>
+                            <th scope="col" class="px-6 py-3 text-yellow-700 cursor-pointer hover:bg-yellow-50" onclick="sortTable(6)">ICD (EIY) <i class="fas fa-sort ml-1"></i></th>
+                            <th scope="col" class="px-6 py-3 text-yellow-700 cursor-pointer hover:bg-yellow-50" onclick="sortTable(7)">SAP (PSR) <i class="fas fa-sort ml-1"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200" id="tableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 mb-20">
+        <h3 class="text-2xl font-bold text-slate-900 mb-6 text-center">Task Taxonomy</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-green-50 p-6 rounded-lg border border-green-100">
+                <div class="text-green-600 text-2xl mb-2"><i class="fas fa-eye"></i></div>
+                <h4 class="font-bold text-lg mb-2">Perception</h4>
+                <ul class="text-sm space-y-2 text-slate-700">
+                    <li><b>KEI:</b> Key Event Identification</li>
+                    <li><b>CSP:</b> Conflict Spatiotemporal Perception</li>
+                    <li><b>BSS:</b> Battle Stage Segmentation</li>
+                </ul>
+            </div>
+            <div class="bg-red-50 p-6 rounded-lg border border-red-100">
+                <div class="text-red-600 text-2xl mb-2"><i class="fas fa-dice"></i></div>
+                <h4 class="font-bold text-lg mb-2">Prediction</h4>
+                <ul class="text-sm space-y-2 text-slate-700">
+                    <li><b>DWP:</b> Dynamic Winner Prediction</li>
+                    <li><b>DWE:</b> Dynamic Win-Rate Estimation</li>
+                </ul>
+            </div>
+            <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-100">
+                <div class="text-yellow-600 text-2xl mb-2"><i class="fas fa-brain"></i></div>
+                <h4 class="font-bold text-lg mb-2">Strategy Inference</h4>
+                <ul class="text-sm space-y-2 text-slate-700">
+                    <li><b>ICD:</b> Intention Change Detection</li>
+                    <li><b>SAP:</b> Strategic Action Prediction</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-900 text-slate-400 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p>&copy; 2026 SC2-CogBench Team. Released under CC BY-NC 4.0.</p>
+            <p class="text-xs mt-2">StarCraft II is a trademark of Blizzard Entertainment.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. 数据源 (基于 Table 2 Summary Scores)
+        [cite_start]// [cite: 584]
+        const models = [
+            { name: "GPT-5", kei: 0.480, csp: 75.22, bss: 45, dwp: 49.15, dwe: 70.05, icd: 6.25, sap: 66.64, link: "https://openai.com" },
+            { name: "Gemini 3 Pro", kei: 0.197, csp: 83.58, bss: 50, dwp: 66.05, dwe: 79.39, icd: 18.80, sap: 61.60, link: "https://deepmind.google" },
+            { name: "Claude 4 Sonnet", kei: 0.260, csp: 88.64, bss: 55, dwp: 52.95, dwe: 71.42, icd: 10.70, sap: 56.32, link: "https://anthropic.com" },
+            { name: "DeepSeek-V3", kei: 0.347, csp: 87.00, bss: 25, dwp: 53.00, dwe: 49.60, icd: 6.04, sap: 57.72, link: "https://deepseek.com" },
+            { name: "Qwen 3", kei: 0.347, csp: 67.88, bss: 65, dwp: 49.35, dwe: 44.40, icd: 7.47, sap: 49.88, link: "https://qwenlm.github.io" },
+            { name: "Kimi K2", kei: 0.350, csp: 38.18, bss: 35, dwp: 40.20, dwe: 61.12, icd: 11.00, sap: 43.92, link: "https://moonshot.cn" }
+        ];
+
+        // 2. 初始化表格
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            // 计算每一列的最大值用于高亮 (SOTA)
+            // KEI是0-1的小数，其他是百分比或整数，这里直接比较数值大小
+            const maxVals = {
+                kei: Math.max(...models.map(m => m.kei)),
+                csp: Math.max(...models.map(m => m.csp)),
+                bss: Math.max(...models.map(m => m.bss)),
+                dwp: Math.max(...models.map(m => m.dwp)),
+                dwe: Math.max(...models.map(m => m.dwe)),
+                icd: Math.max(...models.map(m => m.icd)),
+                sap: Math.max(...models.map(m => m.sap))
+            };
+
+            models.forEach((m, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                
+                // 辅助函数：判断是否是最大值，是则加粗加颜色
+                const fmt = (key, val) => {
+                    if (val === maxVals[key]) return `<span class="font-bold text-slate-900 bg-yellow-100 px-2 py-1 rounded">${val} 🥇</span>`;
+                    return val;
+                };
+
+                // 添加奖杯给前三名 (仅在初始排序时有效，这里简单处理)
+                let rankIcon = `<span class="text-slate-400 font-mono w-6 inline-block text-right mr-2">${index + 1}</span>`;
+                if(index === 0) rankIcon = `<i class="fas fa-trophy gold-trophy w-6 mr-2"></i>`;
+                if(index === 1) rankIcon = `<i class="fas fa-trophy silver-trophy w-6 mr-2"></i>`;
+                if(index === 2) rankIcon = `<i class="fas fa-trophy bronze-trophy w-6 mr-2"></i>`;
+
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap flex items-center">
+                        ${rankIcon}
+                        <a href="${m.link}" class="hover:text-blue-600 hover:underline">${m.name}</a>
+                    </td>
+                    <td class="px-6 py-4">${fmt('kei', m.kei)}</td>
+                    <td class="px-6 py-4">${fmt('csp', m.csp)}</td>
+                    <td class="px-6 py-4">${fmt('bss', m.bss)}</td>
+                    <td class="px-6 py-4">${fmt('dwp', m.dwp)}</td>
+                    <td class="px-6 py-4">${fmt('dwe', m.dwe)}</td>
+                    <td class="px-6 py-4">${fmt('icd', m.icd)}</td>
+                    <td class="px-6 py-4">${fmt('sap', m.sap)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 3. 排序功能
+        let currentSort = { col: -1, asc: true };
+        function sortTable(colIndex) {
+            const keys = ['name', 'kei', 'csp', 'bss', 'dwp', 'dwe', 'icd', 'sap'];
+            const key = keys[colIndex];
+
+            // 切换排序方向
+            if (currentSort.col === colIndex) {
+                currentSort.asc = !currentSort.asc;
+            } else {
+                currentSort.col = colIndex;
+                currentSort.asc = false; // 默认降序（分数越高越好）
+            }
+
+            models.sort((a, b) => {
+                let valA = a[key];
+                let valB = b[key];
+                if (valA < valB) return currentSort.asc ? -1 : 1;
+                if (valA > valB) return currentSort.asc ? 1 : -1;
+                return 0;
+            });
+
+            renderTable();
+        }
+
+        // 4. 初始化雷达图 (Chart.js)
+        function initChart() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            // 准备数据：为了图表美观，KEI (0.48) 这种小数需要归一化或者放大，
+            // 但为了保持真实性，建议将KEI乘以100或者双轴。这里简单处理，假设KEI显示为 x100
+            
+            const data = {
+                labels: ['KEI (Perception)', 'CSP (Perception)', 'BSS (Perception)', 'DWP (Prediction)', 'DWE (Prediction)', 'ICD (Inference)', 'SAP (Inference)'],
+                datasets: [
+                    {
+                        label: 'GPT-5',
+                        data: [48.0, 75.22, 45, 49.15, 70.05, 6.25, 66.64], // KEI * 100 for visibility
+                        borderColor: 'rgba(239, 68, 68, 1)', // Red
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Gemini 3 Pro',
+                        data: [19.7, 83.58, 50, 66.05, 79.39, 18.8, 61.60],
+                        borderColor: 'rgba(59, 130, 246, 1)', // Blue
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'DeepSeek-V3',
+                        data: [34.7, 87.00, 25, 53.00, 49.60, 6.04, 57.72],
+                        borderColor: 'rgba(168, 85, 247, 1)', // Purple
+                        backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                        borderWidth: 2,
+                        hidden: true // 默认隐藏，防止图表太乱
+                    },
+                    {
+                        label: 'Claude 4 Sonnet',
+                        data: [26.0, 88.64, 55, 52.95, 71.42, 10.7, 56.32],
+                        borderColor: 'rgba(34, 197, 94, 1)', // Green
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderWidth: 2,
+                        hidden: true
+                    }
+                ]
+            };
+
+            new Chart(ctx, {
+                type: 'radar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e2e8f0' },
+                            grid: { color: '#e2e8f0' },
+                            pointLabels: {
+                                font: { size: 12, weight: 'bold' },
+                                color: '#475569'
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    let val = context.raw;
+                                    // KEI 特殊处理提示
+                                    if (context.label.includes('KEI')) {
+                                        val = (val / 100).toFixed(3);
+                                    }
+                                    return label + val;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable(); // 渲染表格
+            initChart();   // 渲染图表
+        });
+
+    </script>
+</body>
+</html>
