@@ -3,318 +3,477 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SC2-CogBench Leaderboard</title>
+    <title>SC2-CogBench Leaderboard (Full Interactive)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* 自定义滚动条 */
-        .table-container::-webkit-scrollbar {
-            height: 8px;
-        }
-        .table-container::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 4px;
-        }
-        .gold-trophy { color: #eab308; }
-        .silver-trophy { color: #94a3b8; }
-        .bronze-trophy { color: #b45309; }
+        /* 交互式表格样式 */
+        .metrics-expanded { display: table-cell; animation: fadeIn 0.3s; }
+        .metrics-collapsed { display: none; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .sort-icon { transition: transform 0.2s; }
+        .sort-asc { transform: rotate(180deg); color: #2563eb; }
+        .sort-desc { transform: rotate(0deg); color: #2563eb; }
+        
+        /* 滚动条美化 */
+        .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+
+        /* SOTA 标记动画 */
+        .sota-badge { display: inline-block; animation: pop 0.5s ease-out; }
+        @keyframes pop { 0% { transform: scale(0); } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-blue-100">
 
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                        SC2-CogBench
-                    </span>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a href="https://arxiv.org/abs/2026.xxxxx" target="_blank" class="text-slate-600 hover:text-blue-600 transition"><i class="fas fa-file-pdf mr-1"></i> Paper</a>
-                    <a href="https://github.com/YourUsername/SC2CogBench" target="_blank" class="text-slate-600 hover:text-blue-600 transition"><i class="fab fa-github mr-1"></i> Code</a>
-                    <a href="https://huggingface.co/datasets/YourOrg/SC2CogBench" target="_blank" class="text-slate-600 hover:text-blue-600 transition"><i class="fas fa-database mr-1"></i> Dataset</a>
-                </div>
+    <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 text-white p-2 rounded-lg"><i class="fas fa-robot"></i></div>
+                <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-600">
+                    SC2-CogBench
+                </span>
+            </div>
+            <div class="flex gap-4 text-sm font-medium">
+                <a href="#" class="hover:text-blue-600 transition"><i class="fas fa-file-pdf"></i> Paper</a>
+                <a href="#" class="hover:text-blue-600 transition"><i class="fab fa-github"></i> Code</a>
+                <a href="#" class="hover:text-blue-600 transition"><i class="fas fa-database"></i> Data</a>
             </div>
         </div>
     </nav>
 
-    <div class="bg-white py-12 border-b border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl font-extrabold text-slate-900 mb-4">
-                Benchmarking Cognitive Strategic Reasoning<br>in Large Language Models
-            </h1>
-            <p class="text-lg text-slate-600 max-w-3xl mx-auto">
-                The first cognitively grounded benchmark derived from <b>174 Tier-S StarCraft II matches</b>. 
-                Evaluating LLMs across <b>Perception</b>, <b>Prediction</b>, and <b>Strategy Inference</b> through 7 distinct tasks.
+    <main class="max-w-[95%] mx-auto py-8 space-y-8">
+        
+        <div class="text-center space-y-4">
+            <h1 class="text-4xl font-extrabold text-slate-900">Comprehensive Evaluation Leaderboard</h1>
+            <p class="text-slate-600 max-w-2xl mx-auto">
+                Analyzing Strategic Reasoning across <span class="font-bold text-green-600">Perception</span>, 
+                <span class="font-bold text-red-600">Prediction</span>, and 
+                <span class="font-bold text-yellow-600">Inference</span> using 27 granular metrics.
             </p>
         </div>
-    </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <h2 class="text-xl font-bold mb-6 flex items-center">
-                <i class="fas fa-chart-radar text-blue-600 mr-2"></i> Model Capability Analysis (Radar Chart)
-            </h2>
-            <div class="w-full md:w-2/3 mx-auto h-[400px]">
-                <canvas id="radarChart"></canvas>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                    <i class="fas fa-chart-pie text-blue-500"></i> Capability Radar
+                </h3>
+                <div class="text-xs text-slate-400">Click legend to toggle models</div>
             </div>
-            <p class="text-center text-sm text-slate-500 mt-4">
-                *Comparison of 6 frontier LLMs across 7 tasks. Normalized scores based on Summary metrics.
-            </p>
+            <div class="h-[500px] w-full flex justify-center relative">
+                <canvas id="mainRadarChart"></canvas>
+            </div>
         </div>
-    </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-6 border-b border-slate-200 flex justify-between items-center flex-wrap gap-4">
-                <div>
-                    <h2 class="text-xl font-bold text-slate-900">🏆 Main Leaderboard</h2>
-                    <p class="text-sm text-slate-500">Based on Table 2 Summary Scores. Click headers to sort.</p>
-                </div>
-                <div class="flex gap-2 text-xs font-medium">
-                    <span class="px-2 py-1 bg-green-100 text-green-700 rounded border border-green-200">Perception</span>
-                    <span class="px-2 py-1 bg-red-100 text-red-700 rounded border border-red-200">Prediction</span>
-                    <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded border border-yellow-200">Inference</span>
+        <div class="flex flex-wrap gap-4 justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200 sticky top-20 z-40">
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-bold text-slate-700">View Mode:</span>
+                <div class="flex bg-slate-100 p-1 rounded-lg">
+                    <button onclick="switchView('summary')" id="btn-summary" class="px-4 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-blue-600 transition-all">Summary</button>
+                    <button onclick="switchView('detailed')" id="btn-detailed" class="px-4 py-1.5 text-xs font-bold rounded-md text-slate-500 hover:text-slate-700 transition-all">Full Metrics</button>
                 </div>
             </div>
-            
-            <div class="overflow-x-auto table-container">
-                <table class="w-full text-sm text-left text-slate-600" id="leaderboardTable">
-                    <thead class="text-xs text-slate-700 uppercase bg-slate-50 border-b border-slate-200">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 cursor-pointer hover:bg-slate-100" onclick="sortTable(0)">Model <i class="fas fa-sort ml-1 text-slate-400"></i></th>
-                            <th scope="col" class="px-6 py-3 text-green-700 cursor-pointer hover:bg-green-50" onclick="sortTable(1)">KEI (F1) <i class="fas fa-sort ml-1"></i></th>
-                            <th scope="col" class="px-6 py-3 text-green-700 cursor-pointer hover:bg-green-50" onclick="sortTable(2)">CSP (F1) <i class="fas fa-sort ml-1"></i></th>
-                            <th scope="col" class="px-6 py-3 text-green-700 cursor-pointer hover:bg-green-50" onclick="sortTable(3)">BSS (Acc) <i class="fas fa-sort ml-1"></i></th>
-                            <th scope="col" class="px-6 py-3 text-red-700 cursor-pointer hover:bg-red-50" onclick="sortTable(4)">DWP (Acc) <i class="fas fa-sort ml-1"></i></th>
-                            <th scope="col" class="px-6 py-3 text-red-700 cursor-pointer hover:bg-red-50" onclick="sortTable(5)">DWE (SSIS) <i class="fas fa-sort ml-1"></i></th>
-                            <th scope="col" class="px-6 py-3 text-yellow-700 cursor-pointer hover:bg-yellow-50" onclick="sortTable(6)">ICD (EIY) <i class="fas fa-sort ml-1"></i></th>
-                            <th scope="col" class="px-6 py-3 text-yellow-700 cursor-pointer hover:bg-yellow-50" onclick="sortTable(7)">SAP (PSR) <i class="fas fa-sort ml-1"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200" id="tableBody">
-                        </tbody>
+            <div class="flex gap-2">
+                <button onclick="resetFilters()" class="px-3 py-1.5 text-xs border border-slate-300 rounded hover:bg-slate-50">
+                    <i class="fas fa-undo"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-sm text-left border-collapse" id="mainTable">
+                    <thead class="bg-slate-50 text-slate-700 font-bold uppercase text-xs sticky top-0 z-30 shadow-sm" id="tableHead"></thead>
+                    <tbody class="divide-y divide-slate-100" id="tableBody"></tbody>
                 </table>
             </div>
         </div>
-    </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 mb-20">
-        <h3 class="text-2xl font-bold text-slate-900 mb-6 text-center">Task Taxonomy</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-green-50 p-6 rounded-lg border border-green-100">
-                <div class="text-green-600 text-2xl mb-2"><i class="fas fa-eye"></i></div>
-                <h4 class="font-bold text-lg mb-2">Perception</h4>
-                <ul class="text-sm space-y-2 text-slate-700">
-                    <li><b>KEI:</b> Key Event Identification</li>
-                    <li><b>CSP:</b> Conflict Spatiotemporal Perception</li>
-                    <li><b>BSS:</b> Battle Stage Segmentation</li>
-                </ul>
-            </div>
-            <div class="bg-red-50 p-6 rounded-lg border border-red-100">
-                <div class="text-red-600 text-2xl mb-2"><i class="fas fa-dice"></i></div>
-                <h4 class="font-bold text-lg mb-2">Prediction</h4>
-                <ul class="text-sm space-y-2 text-slate-700">
-                    <li><b>DWP:</b> Dynamic Winner Prediction</li>
-                    <li><b>DWE:</b> Dynamic Win-Rate Estimation</li>
-                </ul>
-            </div>
-            <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-100">
-                <div class="text-yellow-600 text-2xl mb-2"><i class="fas fa-brain"></i></div>
-                <h4 class="font-bold text-lg mb-2">Strategy Inference</h4>
-                <ul class="text-sm space-y-2 text-slate-700">
-                    <li><b>ICD:</b> Intention Change Detection</li>
-                    <li><b>SAP:</b> Strategic Action Prediction</li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    </main>
 
-    <footer class="bg-slate-900 text-slate-400 py-8">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p>&copy; 2026 SC2-CogBench Team. Released under CC BY-NC 4.0.</p>
-            <p class="text-xs mt-2">StarCraft II is a trademark of Blizzard Entertainment.</p>
-        </div>
+    <footer class="text-center py-8 text-slate-400 text-sm">
+        SC2-CogBench Team &copy; 2026. Data sourced from Table 2.
     </footer>
 
     <script>
-        // 1. 数据源 (基于 Table 2 Summary Scores)
-        [cite_start]// [cite: 584]
-        const models = [
-            { name: "GPT-5", kei: 0.480, csp: 75.22, bss: 45, dwp: 49.15, dwe: 70.05, icd: 6.25, sap: 66.64, link: "https://openai.com" },
-            { name: "Gemini 3 Pro", kei: 0.197, csp: 83.58, bss: 50, dwp: 66.05, dwe: 79.39, icd: 18.80, sap: 61.60, link: "https://deepmind.google" },
-            { name: "Claude 4 Sonnet", kei: 0.260, csp: 88.64, bss: 55, dwp: 52.95, dwe: 71.42, icd: 10.70, sap: 56.32, link: "https://anthropic.com" },
-            { name: "DeepSeek-V3", kei: 0.347, csp: 87.00, bss: 25, dwp: 53.00, dwe: 49.60, icd: 6.04, sap: 57.72, link: "https://deepseek.com" },
-            { name: "Qwen 3", kei: 0.347, csp: 67.88, bss: 65, dwp: 49.35, dwe: 44.40, icd: 7.47, sap: 49.88, link: "https://qwenlm.github.io" },
-            { name: "Kimi K2", kei: 0.350, csp: 38.18, bss: 35, dwp: 40.20, dwe: 61.12, icd: 11.00, sap: 43.92, link: "https://moonshot.cn" }
+        // ================= 数据源 (基于 Table 2) =================
+        const METRIC_META = {
+            "KEI_F1": { name: "F1-Score", dir: 1, group: "KEI", isSummary: true },
+            "KEI_Prec": { name: "Precision", dir: 1, group: "KEI" },
+            "KEI_Rec": { name: "Recall", dir: 1, group: "KEI" },
+            "KEI_Red": { name: "Redundancy", dir: -1, group: "KEI" },
+            "KEI_ATE": { name: "ATE (s)", dir: -1, group: "KEI" },
+            "BSS_Acc120": { name: "Acc@120s", dir: 1, group: "BSS", isSummary: true },
+            "BSS_AbsErr": { name: "AbsErr", dir: -1, group: "BSS" },
+            "BSS_SDRE": { name: "SDRE", dir: -1, group: "BSS" },
+            "BSS_OSC": { name: "OSC", dir: -1, group: "BSS" },
+            "BSS_Acc30": { name: "Acc@30s", dir: 1, group: "BSS" },
+            "BSS_Acc60": { name: "Acc@60s", dir: 1, group: "BSS" },
+            "BSS_Bias": { name: "T-Bias", dir: 0, group: "BSS" },
+            "CSP_F1": { name: "F1-Score", dir: 1, group: "CSP", isSummary: true },
+            "CSP_Prec": { name: "Precision", dir: 1, group: "CSP" },
+            "CSP_Rec": { name: "Recall", dir: 1, group: "CSP" },
+            "CSP_TPC": { name: "TPC", dir: 1, group: "CSP" },
+            "CSP_SPC": { name: "SPC", dir: 1, group: "CSP" },
+            "DWP_Acc": { name: "Global Acc", dir: 1, group: "DWP", isSummary: true },
+            "DWP_Acc2": { name: "Acc@2m", dir: 1, group: "DWP" },
+            "DWP_Acc4": { name: "Acc@4m", dir: 1, group: "DWP" },
+            "DWP_Acc6": { name: "Acc@6m", dir: 1, group: "DWP" },
+            "DWP_Acc8": { name: "Acc@8m", dir: 1, group: "DWP" },
+            "DWP_Acc10": { name: "Acc@10m", dir: 1, group: "DWP" },
+            "DWP_EGF": { name: "EGF", dir: 1, group: "DWP" },
+            "DWP_LGR": { name: "LGR", dir: 1, group: "DWP" },
+            "DWP_PSS": { name: "PSS", dir: 1, group: "DWP" },
+            "DWE_SSIS": { name: "SSIS", dir: 1, group: "DWE", isSummary: true },
+            "DWE_ZA": { name: "Zone Acc", dir: 1, group: "DWE" },
+            "DWE_FA": { name: "Final Acc", dir: 1, group: "DWE" },
+            "DWE_BAS": { name: "BAS", dir: -1, group: "DWE" },
+            "DWE_WCE": { name: "WCE", dir: -1, group: "DWE" },
+            "ICD_EIY": { name: "EIY", dir: 1, group: "ICD", isSummary: true },
+            "ICD_GTR": { name: "GTR", dir: 1, group: "ICD" },
+            "ICD_WinEff": { name: "Win Eff", dir: 1, group: "ICD" },
+            "ICD_LoseEff": { name: "Lose Eff", dir: 1, group: "ICD" },
+            "SAP_PSR": { name: "PSR", dir: 1, group: "SAP", isSummary: true },
+            "SAP_F1": { name: "F1-Score", dir: 1, group: "SAP" },
+            "SAP_Prec": { name: "Precision", dir: 1, group: "SAP" },
+            "SAP_Rec": { name: "Recall", dir: 1, group: "SAP" }
+        };
+
+        const TASK_GROUPS = {
+            "KEI": { label: "KEI", color: "bg-green-50 text-green-700 border-green-200", dim: "Perception" },
+            "BSS": { label: "BSS", color: "bg-green-50 text-green-700 border-green-200", dim: "Perception" },
+            "CSP": { label: "CSP", color: "bg-green-50 text-green-700 border-green-200", dim: "Perception" },
+            "DWP": { label: "DWP", color: "bg-red-50 text-red-700 border-red-200", dim: "Prediction" },
+            "DWE": { label: "DWE", color: "bg-red-50 text-red-700 border-red-200", dim: "Prediction" },
+            "ICD": { label: "ICD", color: "bg-yellow-50 text-yellow-700 border-yellow-200", dim: "Inference" },
+            "SAP": { label: "SAP", color: "bg-yellow-50 text-yellow-700 border-yellow-200", dim: "Inference" }
+        };
+
+        const rawData = [
+            {
+                name: "GPT-5", link: "https://openai.com", color: "rgba(239, 68, 68, 1)", // Red
+                data: { KEI_F1: 0.480, KEI_Prec: 0.405, KEI_Rec: 0.728, KEI_Red: 0.595, KEI_ATE: 2.7, BSS_Acc120: 0.45, BSS_AbsErr: 182.90, BSS_SDRE: 0.63, BSS_OSC: 1, BSS_Acc30: 0, BSS_Acc60: 0.5, BSS_Bias: -62.85, CSP_F1: 72.2, CSP_Prec: 0.948, CSP_Rec: 0.583, CSP_TPC: 0.801, CSP_SPC: 0.794, DWP_Acc: 46, DWP_Acc2: 0.40, DWP_Acc4: 0.50, DWP_Acc6: 0.40, DWP_Acc8: 0.50, DWP_Acc10: 0.50, DWP_EGF: 0.45, DWP_LGR: 0.50, DWP_PSS: 0.575, DWE_SSIS: 70.05, DWE_ZA: 0.584, DWE_FA: 0.90, DWE_BAS: 0.155, DWE_WCE: 0.242, ICD_EIY: 6.25, ICD_GTR: 0.33, ICD_WinEff: 0.66, ICD_LoseEff: 0.59, SAP_PSR: 94.0, SAP_F1: 0.242, SAP_Prec: 0.273, SAP_Rec: 0.219 }
+            },
+            {
+                name: "Gemini 3 Pro", link: "https://deepmind.google", color: "rgba(59, 130, 246, 1)", // Blue
+                data: { KEI_F1: 0.197, KEI_Prec: 0.157, KEI_Rec: 0.738, KEI_Red: 0.842, KEI_ATE: 3.4, BSS_Acc120: 0.50, BSS_AbsErr: 179.65, BSS_SDRE: 0.59, BSS_OSC: 2, BSS_Acc30: 0.25, BSS_Acc60: 0.25, BSS_Bias: -188.5, CSP_F1: 77.4, CSP_Prec: 0.878, CSP_Rec: 0.692, CSP_TPC: 0.942, CSP_SPC: 0.915, DWP_Acc: 62, DWP_Acc2: 0.60, DWP_Acc4: 0.60, DWP_Acc6: 0.70, DWP_Acc8: 0.70, DWP_Acc10: 0.50, DWP_EGF: 0.60, DWP_LGR: 0.60, DWP_PSS: 0.775, DWE_SSIS: 79.39, DWE_ZA: 0.806, DWE_FA: 0.90, DWE_BAS: 0.131, DWE_WCE: 0.214, ICD_EIY: 18.80, ICD_GTR: 0.64, ICD_WinEff: 0.46, ICD_LoseEff: 0.48, SAP_PSR: 88.0, SAP_F1: 0.220, SAP_Prec: 0.254, SAP_Rec: 0.195 }
+            },
+            {
+                name: "Claude 4 Sonnet", link: "https://anthropic.com", color: "rgba(34, 197, 94, 1)", // Green
+                data: { KEI_F1: 0.260, KEI_Prec: 0.362, KEI_Rec: 0.220, KEI_Red: 0.638, KEI_ATE: 2.1, BSS_Acc120: 0.55, BSS_AbsErr: 256.85, BSS_SDRE: 0.84, BSS_OSC: 4, BSS_Acc30: 0.20, BSS_Acc60: 0.35, BSS_Bias: -225.3, CSP_F1: 88.4, CSP_Prec: 0.917, CSP_Rec: 0.853, CSP_TPC: 0.897, CSP_SPC: 0.883, DWP_Acc: 48, DWP_Acc2: 0.30, DWP_Acc4: 0.40, DWP_Acc6: 0.60, DWP_Acc8: 0.70, DWP_Acc10: 0.40, DWP_EGF: 0.35, DWP_LGR: 0.55, DWP_PSS: 0.775, DWE_SSIS: 71.42, DWE_ZA: 0.619, DWE_FA: 0.90, DWE_BAS: 0.152, DWE_WCE: 0.240, ICD_EIY: 10.70, ICD_GTR: 0.58, ICD_WinEff: 0.54, ICD_LoseEff: 0.53, SAP_PSR: 82.0, SAP_F1: 0.196, SAP_Prec: 0.222, SAP_Rec: 0.177 }
+            },
+            {
+                name: "DeepSeek-V3", link: "https://deepseek.com", color: "rgba(168, 85, 247, 1)", // Purple
+                data: { KEI_F1: 0.347, KEI_Prec: 0.324, KEI_Rec: 0.552, KEI_Red: 0.676, KEI_ATE: 3.1, BSS_Acc120: 0.25, BSS_AbsErr: 210.55, BSS_SDRE: 0.71, BSS_OSC: 0, BSS_Acc30: 0.15, BSS_Acc60: 0.15, BSS_Bias: -202.7, CSP_F1: 90.1, CSP_Prec: 0.873, CSP_Rec: 0.929, CSP_TPC: 0.835, CSP_SPC: 0.812, DWP_Acc: 50, DWP_Acc2: 0.40, DWP_Acc4: 0.50, DWP_Acc6: 0.40, DWP_Acc8: 0.60, DWP_Acc10: 0.60, DWP_EGF: 0.45, DWP_LGR: 0.60, DWP_PSS: 0.650, DWE_SSIS: 49.60, DWE_ZA: 0.354, DWE_FA: 0.60, DWE_BAS: 0.211, DWE_WCE: 0.286, ICD_EIY: 6.04, ICD_GTR: 0.43, ICD_WinEff: 0.45, ICD_LoseEff: 0.42, SAP_PSR: 84.0, SAP_F1: 0.201, SAP_Prec: 0.235, SAP_Rec: 0.178 }
+            },
+            {
+                name: "Qwen 3", link: "https://qwenlm.github.io", color: "rgba(249, 115, 22, 1)", // Orange
+                data: { KEI_F1: 0.347, KEI_Prec: 0.260, KEI_Rec: 0.551, KEI_Red: 0.740, KEI_ATE: 5.9, BSS_Acc120: 0.65, BSS_AbsErr: 150.05, BSS_SDRE: 0.60, BSS_OSC: 1, BSS_Acc30: 0.15, BSS_Acc60: 0.30, BSS_Bias: -134.5, CSP_F1: 70.5, CSP_Prec: 0.803, CSP_Rec: 0.628, CSP_TPC: 0.658, CSP_SPC: 0.621, DWP_Acc: 54, DWP_Acc2: 0.50, DWP_Acc4: 0.20, DWP_Acc6: 0.60, DWP_Acc8: 0.80, DWP_Acc10: 0.60, DWP_EGF: 0.35, DWP_LGR: 0.70, DWP_PSS: 0.575, DWE_SSIS: 44.40, DWE_ZA: 0.360, DWE_FA: 0.50, DWE_BAS: 0.233, DWE_WCE: 0.312, ICD_EIY: 7.47, ICD_GTR: 0.78, ICD_WinEff: 0.42, ICD_LoseEff: 0.44, SAP_PSR: 74.0, SAP_F1: 0.169, SAP_Prec: 0.198, SAP_Rec: 0.151 }
+            },
+            {
+                name: "Kimi K2", link: "https://moonshot.cn", color: "rgba(236, 72, 153, 1)", // Pink
+                data: { KEI_F1: 0.350, KEI_Prec: 0.366, KEI_Rec: 0.353, KEI_Red: 0.635, KEI_ATE: 4.1, BSS_Acc120: 0.35, BSS_AbsErr: 196.30, BSS_SDRE: 0.62, BSS_OSC: 2, BSS_Acc30: 0, BSS_Acc60: 0.15, BSS_Bias: -188.5, CSP_F1: 37.0, CSP_Prec: 0.303, CSP_Rec: 0.474, CSP_TPC: 0.412, CSP_SPC: 0.387, DWP_Acc: 48, DWP_Acc2: 0.20, DWP_Acc4: 0.30, DWP_Acc6: 0.50, DWP_Acc8: 1.00, DWP_Acc10: 0.40, DWP_EGF: 0.25, DWP_LGR: 0.70, DWP_PSS: 0.450, DWE_SSIS: 61.12, DWE_ZA: 0.544, DWE_FA: 0.70, DWE_BAS: 0.167, DWE_WCE: 0.247, ICD_EIY: 11.00, ICD_GTR: 0.52, ICD_WinEff: 0.45, ICD_LoseEff: 0.50, SAP_PSR: 66.0, SAP_F1: 0.146, SAP_Prec: 0.160, SAP_Rec: 0.135 }
+            }
         ];
 
-        // 2. 初始化表格
-        function renderTable() {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
+        let state = {
+            expandedTasks: new Set(),
+            visibleModels: new Set(rawData.map(m => m.name)), 
+            viewMode: 'summary',
+            sortKey: 'KEI_F1',
+            sortAsc: false
+        };
 
-            // 计算每一列的最大值用于高亮 (SOTA)
-            // KEI是0-1的小数，其他是百分比或整数，这里直接比较数值大小
-            const maxVals = {
-                kei: Math.max(...models.map(m => m.kei)),
-                csp: Math.max(...models.map(m => m.csp)),
-                bss: Math.max(...models.map(m => m.bss)),
-                dwp: Math.max(...models.map(m => m.dwp)),
-                dwe: Math.max(...models.map(m => m.dwe)),
-                icd: Math.max(...models.map(m => m.icd)),
-                sap: Math.max(...models.map(m => m.sap))
-            };
-
-            models.forEach((m, index) => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition";
-                
-                // 辅助函数：判断是否是最大值，是则加粗加颜色
-                const fmt = (key, val) => {
-                    if (val === maxVals[key]) return `<span class="font-bold text-slate-900 bg-yellow-100 px-2 py-1 rounded">${val} 🥇</span>`;
-                    return val;
-                };
-
-                // 添加奖杯给前三名 (仅在初始排序时有效，这里简单处理)
-                let rankIcon = `<span class="text-slate-400 font-mono w-6 inline-block text-right mr-2">${index + 1}</span>`;
-                if(index === 0) rankIcon = `<i class="fas fa-trophy gold-trophy w-6 mr-2"></i>`;
-                if(index === 1) rankIcon = `<i class="fas fa-trophy silver-trophy w-6 mr-2"></i>`;
-                if(index === 2) rankIcon = `<i class="fas fa-trophy bronze-trophy w-6 mr-2"></i>`;
-
-                tr.innerHTML = `
-                    <td class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap flex items-center">
-                        ${rankIcon}
-                        <a href="${m.link}" class="hover:text-blue-600 hover:underline">${m.name}</a>
-                    </td>
-                    <td class="px-6 py-4">${fmt('kei', m.kei)}</td>
-                    <td class="px-6 py-4">${fmt('csp', m.csp)}</td>
-                    <td class="px-6 py-4">${fmt('bss', m.bss)}</td>
-                    <td class="px-6 py-4">${fmt('dwp', m.dwp)}</td>
-                    <td class="px-6 py-4">${fmt('dwe', m.dwe)}</td>
-                    <td class="px-6 py-4">${fmt('icd', m.icd)}</td>
-                    <td class="px-6 py-4">${fmt('sap', m.sap)}</td>
-                `;
-                tbody.appendChild(tr);
+        function getSotaMap() {
+            const map = {};
+            Object.keys(METRIC_META).forEach(key => {
+                const values = rawData.map(m => m.data[key]);
+                const dir = METRIC_META[key].dir;
+                if (dir === 1) map[key] = Math.max(...values);
+                else if (dir === -1) map[key] = Math.min(...values);
+                else {
+                    let minBias = Infinity;
+                    let bestVal = 0;
+                    values.forEach(v => {
+                        if (Math.abs(v) < minBias) { minBias = Math.abs(v); bestVal = v; }
+                    });
+                    map[key] = bestVal;
+                }
             });
+            return map;
         }
 
-        // 3. 排序功能
-        let currentSort = { col: -1, asc: true };
-        function sortTable(colIndex) {
-            const keys = ['name', 'kei', 'csp', 'bss', 'dwp', 'dwe', 'icd', 'sap'];
-            const key = keys[colIndex];
+        const sotaMap = getSotaMap();
 
-            // 切换排序方向
-            if (currentSort.col === colIndex) {
-                currentSort.asc = !currentSort.asc;
-            } else {
-                currentSort.col = colIndex;
-                currentSort.asc = false; // 默认降序（分数越高越好）
-            }
+        function formatVal(key, val) {
+            if (["KEI_ATE", "BSS_AbsErr", "BSS_Bias"].includes(key)) return val.toFixed(1);
+            if (Number.isInteger(val)) return val;
+            return val.toFixed(3);
+        }
 
-            models.sort((a, b) => {
-                let valA = a[key];
-                let valB = b[key];
-                if (valA < valB) return currentSort.asc ? -1 : 1;
-                if (valA > valB) return currentSort.asc ? 1 : -1;
-                return 0;
+        function renderTable() {
+            const thead = document.getElementById('tableHead');
+            const tbody = document.getElementById('tableBody');
+            
+            let headHTML = `<tr>
+                <th class="px-6 py-4 bg-slate-50 sticky left-0 z-20 shadow-r border-r border-slate-200 w-48">Model</th>`;
+            
+            headHTML += `<th class="px-2 py-4 w-10 text-center text-xs text-slate-400">Show</th>`;
+
+            Object.keys(TASK_GROUPS).forEach(groupKey => {
+                const group = TASK_GROUPS[groupKey];
+                const metrics = Object.keys(METRIC_META).filter(m => METRIC_META[m].group === groupKey);
+                const summaryMetric = metrics.find(m => METRIC_META[m].isSummary);
+                const subMetrics = metrics.filter(m => !METRIC_META[m].isSummary);
+                
+                const isExpanded = state.expandedTasks.has(groupKey) || state.viewMode === 'detailed';
+                
+                headHTML += `
+                    <th class="px-4 py-3 cursor-pointer hover:bg-slate-100 transition border-l border-slate-200 group relative ${group.color}"
+                        onclick="toggleTask('${groupKey}')" colspan="${isExpanded ? 1 : 1}">
+                        <div class="flex items-center justify-between">
+                            <span>${groupKey} <span class="opacity-60 text-[10px] ml-1">${summaryMetric ? METRIC_META[summaryMetric.name] || summaryMetric.name : ''}</span></span>
+                            <i class="fas fa-chevron-${isExpanded ? 'left' : 'right'} text-xs opacity-50"></i>
+                        </div>
+                    </th>
+                `;
+
+                if (isExpanded) {
+                    subMetrics.forEach(mKey => {
+                        headHTML += `<th class="px-3 py-3 text-xs font-medium text-slate-500 bg-white border-b-2 border-slate-100 min-w-[80px] cursor-pointer hover:text-blue-600" onclick="setSort('${mKey}')">
+                            ${METRIC_META[mKey].name}
+                            ${state.sortKey === mKey ? (state.sortAsc ? '↑' : '↓') : ''}
+                        </th>`;
+                    });
+                }
+            });
+            headHTML += `</tr>`;
+            thead.innerHTML = headHTML;
+
+            const sortedModels = [...rawData].sort((a, b) => {
+                const valA = a.data[state.sortKey];
+                const valB = b.data[state.sortKey];
+                const dir = METRIC_META[state.sortKey].dir === -1 ? -1 : 1;
+                const sortDir = state.sortAsc ? 1 : -1;
+                if (state.sortKey.includes("Bias")) {
+                    return (Math.abs(valA) - Math.abs(valB)) * sortDir;
+                }
+                return (valA - valB) * dir * sortDir * -1;
             });
 
+            tbody.innerHTML = sortedModels.map(model => {
+                let rowHTML = `<tr class="hover:bg-slate-50 transition group">`;
+                
+                rowHTML += `<td class="px-6 py-3 font-semibold text-slate-900 bg-white sticky left-0 z-10 border-r border-slate-100 shadow-sm">
+                    <a href="${model.link}" target="_blank" class="hover:text-blue-600 flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full" style="background-color: ${model.color}"></span>
+                        ${model.name}
+                    </a>
+                </td>`;
+
+                const isChecked = state.visibleModels.has(model.name) ? 'checked' : '';
+                rowHTML += `<td class="text-center bg-white"><input type="checkbox" ${isChecked} onchange="toggleModel('${model.name}')" class="rounded text-blue-600 focus:ring-blue-500 cursor-pointer"></td>`;
+
+                Object.keys(TASK_GROUPS).forEach(groupKey => {
+                    const metrics = Object.keys(METRIC_META).filter(m => METRIC_META[m].group === groupKey);
+                    const summaryMetricKey = metrics.find(m => METRIC_META[m].isSummary);
+                    const subMetrics = metrics.filter(m => !METRIC_META[m].isSummary);
+                    const isExpanded = state.expandedTasks.has(groupKey) || state.viewMode === 'detailed';
+
+                    const val = model.data[summaryMetricKey];
+                    const isSota = val === sotaMap[summaryMetricKey];
+                    const alpha = Math.abs(val) / (Math.abs(sotaMap[summaryMetricKey]) || 1) * 0.15;
+                    
+                    rowHTML += `<td class="px-4 py-3 border-l border-slate-100 text-center font-bold relative" style="background-color: ${isSota ? '#fef9c3' : `rgba(59, 130, 246, ${alpha})`}">
+                        ${isSota ? '<i class="fas fa-crown text-yellow-500 text-xs absolute top-1 right-1 sota-badge"></i>' : ''}
+                        ${formatVal(summaryMetricKey, val)}
+                    </td>`;
+
+                    if (isExpanded) {
+                        subMetrics.forEach(mKey => {
+                            const subVal = model.data[mKey];
+                            const isSubSota = subVal === sotaMap[mKey];
+                            rowHTML += `<td class="px-3 py-3 text-center text-slate-600 ${isSubSota ? 'font-bold text-slate-900 bg-yellow-50/50' : ''}">
+                                ${formatVal(mKey, subVal)}
+                            </td>`;
+                        });
+                    }
+                });
+
+                rowHTML += `</tr>`;
+                return rowHTML;
+            }).join('');
+        }
+
+        function toggleTask(taskGroup) {
+            if (state.viewMode === 'detailed') return;
+            if (state.expandedTasks.has(taskGroup)) state.expandedTasks.delete(taskGroup);
+            else state.expandedTasks.add(taskGroup);
             renderTable();
         }
 
-        // 4. 初始化雷达图 (Chart.js)
-        function initChart() {
-            const ctx = document.getElementById('radarChart').getContext('2d');
-            
-            // 准备数据：为了图表美观，KEI (0.48) 这种小数需要归一化或者放大，
-            // 但为了保持真实性，建议将KEI乘以100或者双轴。这里简单处理，假设KEI显示为 x100
-            
-            const data = {
-                labels: ['KEI (Perception)', 'CSP (Perception)', 'BSS (Perception)', 'DWP (Prediction)', 'DWE (Prediction)', 'ICD (Inference)', 'SAP (Inference)'],
-                datasets: [
-                    {
-                        label: 'GPT-5',
-                        data: [48.0, 75.22, 45, 49.15, 70.05, 6.25, 66.64], // KEI * 100 for visibility
-                        borderColor: 'rgba(239, 68, 68, 1)', // Red
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        borderWidth: 2
-                    },
-                    {
-                        label: 'Gemini 3 Pro',
-                        data: [19.7, 83.58, 50, 66.05, 79.39, 18.8, 61.60],
-                        borderColor: 'rgba(59, 130, 246, 1)', // Blue
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        borderWidth: 2
-                    },
-                    {
-                        label: 'DeepSeek-V3',
-                        data: [34.7, 87.00, 25, 53.00, 49.60, 6.04, 57.72],
-                        borderColor: 'rgba(168, 85, 247, 1)', // Purple
-                        backgroundColor: 'rgba(168, 85, 247, 0.1)',
-                        borderWidth: 2,
-                        hidden: true // 默认隐藏，防止图表太乱
-                    },
-                    {
-                        label: 'Claude 4 Sonnet',
-                        data: [26.0, 88.64, 55, 52.95, 71.42, 10.7, 56.32],
-                        borderColor: 'rgba(34, 197, 94, 1)', // Green
-                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                        borderWidth: 2,
-                        hidden: true
-                    }
-                ]
-            };
+        function switchView(mode) {
+            state.viewMode = mode;
+            document.getElementById('btn-summary').className = mode === 'summary' ? 
+                "px-4 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-blue-600 transition-all" : 
+                "px-4 py-1.5 text-xs font-bold rounded-md text-slate-500 hover:text-slate-700 transition-all";
+            document.getElementById('btn-detailed').className = mode === 'detailed' ? 
+                "px-4 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-blue-600 transition-all" : 
+                "px-4 py-1.5 text-xs font-bold rounded-md text-slate-500 hover:text-slate-700 transition-all";
+            renderTable();
+        }
 
-            new Chart(ctx, {
+        function toggleModel(name) {
+            if (state.visibleModels.has(name)) state.visibleModels.delete(name);
+            else state.visibleModels.add(name);
+            updateChart();
+        }
+
+        function setSort(key) {
+            if (state.sortKey === key) state.sortAsc = !state.sortAsc;
+            else {
+                state.sortKey = key;
+                state.sortAsc = false;
+            }
+            renderTable();
+        }
+
+        function resetFilters() {
+            state.visibleModels = new Set(rawData.map(m => m.name));
+            state.expandedTasks.clear();
+            state.viewMode = 'summary';
+            state.sortKey = 'KEI_F1';
+            switchView('summary');
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
+            renderTable();
+            updateChart();
+        }
+
+        let radarChart;
+
+        function initChart() {
+            const ctx = document.getElementById('mainRadarChart').getContext('2d');
+            
+            const labels = ["KEI (F1)", "CSP (F1)", "BSS (Acc)", "DWP (Acc)", "DWE (SSIS)", "ICD (EIY)", "SAP (PSR)"];
+            const metricKeys = ["KEI_F1", "CSP_F1", "BSS_Acc120", "DWP_Acc", "DWE_SSIS", "ICD_EIY", "SAP_PSR"];
+
+            const datasets = rawData.map(model => {
+                const data = metricKeys.map(key => {
+                    let val = model.data[key];
+                    if (key === 'KEI_F1') val *= 100;
+                    if (key === 'BSS_Acc120' && val < 1) val *= 100; 
+                    // Scale ICD visually (max ~19) to match 0-100 chart
+                    if (key === 'ICD_EIY') val *= 5; 
+                    if (val < 1) val *= 100;
+                    return val;
+                });
+
+                return {
+                    label: model.name,
+                    data: data,
+                    borderColor: model.color,
+                    backgroundColor: model.color.replace('1)', '0.05)'), // Very light fill
+                    borderWidth: 2.5,
+                    pointRadius: 0,
+                    pointHoverRadius: 6,
+                    tension: 0.3, // Smooth curves
+                    fill: true,
+                    hidden: false // Ensure all models are loaded initially
+                };
+            });
+
+            radarChart = new Chart(ctx, {
                 type: 'radar',
-                data: data,
+                data: { labels: labels, datasets: datasets },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
                         r: {
-                            angleLines: { color: '#e2e8f0' },
-                            grid: { color: '#e2e8f0' },
+                            ticks: { display: false, maxTicksLimit: 6 }, // Remove numeric labels
+                            grid: {
+                                color: 'rgba(203, 213, 225, 0.4)',
+                                circular: true // Circular grid for advanced look
+                            },
+                            angleLines: { color: 'rgba(203, 213, 225, 0.4)' },
                             pointLabels: {
-                                font: { size: 12, weight: 'bold' },
-                                color: '#475569'
+                                font: { size: 12, weight: '700', family: 'sans-serif' },
+                                color: '#64748b'
                             },
                             suggestedMin: 0,
                             suggestedMax: 100
                         }
                     },
                     plugins: {
-                        legend: { position: 'top' },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: { size: 12, weight: '500' }
+                            },
+                            onClick: function(e, legendItem, legend) {
+                                // Sync chart legend click with table toggle
+                                const index = legendItem.datasetIndex;
+                                const ci = legend.chart;
+                                const meta = ci.getDatasetMeta(index);
+                                const modelName = rawData[index].name;
+                                
+                                // Standard Chart.js toggle logic
+                                if (ci.isDatasetVisible(index)) {
+                                    ci.hide(index);
+                                    legendItem.hidden = true;
+                                    state.visibleModels.delete(modelName);
+                                } else {
+                                    ci.show(index);
+                                    legendItem.hidden = false;
+                                    state.visibleModels.add(modelName);
+                                }
+                                
+                                // Sync checkbox in table
+                                const checkbox = document.querySelector(`input[onchange="toggleModel('${modelName}')"]`);
+                                if (checkbox) checkbox.checked = state.visibleModels.has(modelName);
+                            }
+                        },
                         tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#1e293b',
+                            bodyColor: '#475569',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 10,
+                            boxPadding: 4,
+                            usePointStyle: true,
                             callbacks: {
                                 label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) { label += ': '; }
-                                    let val = context.raw;
-                                    // KEI 特殊处理提示
-                                    if (context.label.includes('KEI')) {
-                                        val = (val / 100).toFixed(3);
-                                    }
-                                    return label + val;
+                                    const rawVal = rawData.find(m => m.name === context.dataset.label).data[metricKeys[context.dataIndex]];
+                                    return `${context.dataset.label}: ${rawVal}`;
                                 }
                             }
                         }
+                    },
+                    elements: {
+                        line: { borderJoinStyle: 'round' }
                     }
                 }
             });
         }
 
-        // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', () => {
-            renderTable(); // 渲染表格
-            initChart();   // 渲染图表
-        });
+        function updateChart() {
+            radarChart.data.datasets.forEach(ds => {
+                ds.hidden = !state.visibleModels.has(ds.label);
+            });
+            radarChart.update();
+        }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+            initChart();
+        });
     </script>
 </body>
 </html>
