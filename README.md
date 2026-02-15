@@ -2,6 +2,8 @@
 
 # SC2-CogBench
 ### Benchmarking Cognitive Strategic Reasoning in Large Language Models through StarCraft II
+
+[![Leaderboard](https://img.shields.io/badge/🏆_Leaderboard-Interactive_View-blue)](https://PlayeROnE-llh.github.io/SC2Cogbench)
 </div>
 
 ---
@@ -40,6 +42,15 @@ The dataset captures the authentic, high-stakes adversarial dynamics of elite hu
 ---
 
 ## 🏆 Leaderboard & Analysis
+
+<div align="center">
+  <a href="https://PlayeROnE-llh.github.io/SC2Cogbench">
+    <img src="https://img.shields.io/badge/🚀_Click_Here_to_View_Interactive_Leaderboard-blue?style=for-the-badge&logo=html5&logoColor=white" height="35" alt="Interactive Leaderboard"/>
+  </a>
+  <br>
+  <em>Visit our project page for interactive radar charts, sorting, and full metric breakdowns.</em>
+</div>
+<br>
 
 We evaluated **6 frontier LLMs** (GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek-V3, Qwen 3, Kimi K2). Our extensive experiments reveal that **no single model successfully masters the complete perception-prediction-inference loop**.
 
