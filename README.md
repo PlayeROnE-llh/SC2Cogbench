@@ -142,17 +142,3 @@ We evaluated **6 frontier LLMs** (GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek
 | | **PSR** | **0.94** | 0.88 | 0.82 | 0.84 | 0.74 | 0.66 |
 
 </div>
-
----
-
-## 🖊️ Citation
-
-If you use SC2-CogBench in your research, please cite our paper:
-
-```bibtex
-@inproceedings{sc2cogbench2026,
-  title={SC2-CogBench: Benchmarking Cognitive Strategic Reasoning in Large Language Models through StarCraft II},
-  author={Anonymous Authors},
-  booktitle={Under Review},
-  year={2026}
-}
