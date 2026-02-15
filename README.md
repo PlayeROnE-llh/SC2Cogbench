@@ -8,15 +8,15 @@
 
 ## 📖 Introduction
 
-[cite_start]**SC2-CogBench** is the first cognitively grounded benchmark designed to rigorously evaluate the **Strategic Reasoning** capabilities of Large Language Models (LLMs) within the complex, adversarial environment of **StarCraft II**. [cite: 56, 61, 83]
+**SC2-CogBench** is the first cognitively grounded benchmark designed to rigorously evaluate the **Strategic Reasoning** capabilities of Large Language Models (LLMs) within the complex, adversarial environment of **StarCraft II**.
 
-[cite_start]Unlike existing benchmarks that focus on simple micro-management or end-to-end outcome assessment, SC2-CogBench leverages **174 professional Tier-S tournament matches** (EWC 2025, DreamHack)[cite: 63, 287]. [cite_start]It decomposes strategic reasoning into three hierarchical cognitive dimensions: **Perception**, **Prediction**, and **Strategy Inference**[cite: 62].
+Unlike existing benchmarks that focus on simple micro-management or end-to-end outcome assessment, SC2-CogBench leverages **174 professional Tier-S tournament matches** (EWC 2025, DreamHack). It decomposes strategic reasoning into three hierarchical cognitive dimensions: **Perception**, **Prediction**, and **Strategy Inference**.
 
 <br>
 <div align="center">
   <img src="Figures/Figure1_Framework.png" alt="Figure 1: Hierarchical Framework" width="95%"/>
   <br>
-  [cite_start]<em><strong>Figure 1:</strong> The hierarchical framework of SC2-CogBench, covering 7 tasks and 27 granular metrics.</em> [cite: 180]
+  <em><strong>Figure 1:</strong> The hierarchical framework of SC2-CogBench, covering 7 tasks and 27 granular metrics.</em>
 </div>
 <br>
 
@@ -24,16 +24,16 @@
 
 ## 🏗️ Data Construction
 
-[cite_start]The dataset captures the authentic, high-stakes adversarial dynamics of elite human competition [cite: 260-261]. [cite_start]We constructed **150 evaluation instances** with semantically grounded human expert annotations[cite: 63].
+The dataset captures the authentic, high-stakes adversarial dynamics of elite human competition. We constructed **150 evaluation instances** with semantically grounded human expert annotations.
 
-* [cite_start]**Source:** 174 raw matches from 2025 Tier-S Tournaments (EWC & DreamHack)[cite: 287].
-* [cite_start]**Annotation:** A hybrid protocol involving **7 human experts** and an **XGBoost-based Win-Rate Model** for objective grounding [cite: 292-293].
+* **Source:** 174 raw matches from 2025 Tier-S Tournaments (EWC & DreamHack).
+* **Annotation:** A hybrid protocol involving **7 human experts** and an **XGBoost-based Win-Rate Model** for objective grounding.
 
 <br>
 <div align="center">
   <img src="Figures/Figure3_Pipeline.png" alt="Figure 3: Data Pipeline" width="95%"/>
   <br>
-  <em><strong>Figure 2:</strong> Data construction pipeline. [cite_start]Raw match data is filtered and annotated by experts to produce high-quality test samples.</em> [cite: 305]
+  <em><strong>Figure 2:</strong> Data construction pipeline. Raw match data is filtered and annotated by experts to produce high-quality test samples.</em>
 </div>
 <br>
 
@@ -41,23 +41,23 @@
 
 ## 🏆 Leaderboard & Analysis
 
-[cite_start]We evaluated **6 frontier LLMs** (GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek-V3, Qwen 3, Kimi K2)[cite: 484]. [cite_start]Our extensive experiments reveal that **no single model successfully masters the complete perception-prediction-inference loop**[cite: 561].
+We evaluated **6 frontier LLMs** (GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek-V3, Qwen 3, Kimi K2). Our extensive experiments reveal that **no single model successfully masters the complete perception-prediction-inference loop**.
 
 ### 🧠 Capability Overview
-* [cite_start]**Gemini 3 Pro** excels at predictive reasoning and situational awareness[cite: 567].
-* [cite_start]**GPT-5** performs best in high-level strategic inference and execution[cite: 563].
-* [cite_start]**DeepSeek-V3** demonstrates strong granular perception in combat scenarios[cite: 498].
+* **Gemini 3 Pro** excels at predictive reasoning and situational awareness.
+* **GPT-5** performs best in high-level strategic inference and execution.
+* **DeepSeek-V3** demonstrates strong granular perception in combat scenarios.
 
 <br>
 <div align="center">
   <img src="Figures/Figure2_Results.png" alt="Figure 2: Radar Chart" width="85%"/>
   <br>
-  [cite_start]<em><strong>Figure 3:</strong> Experimental results of six LLMs across Perception, Prediction, and Strategy Inference tasks.</em> [cite: 182]
+  <em><strong>Figure 3:</strong> Experimental results of six LLMs across Perception, Prediction, and Strategy Inference tasks.</em>
 </div>
 <br>
 
 ### 🥇 Summary Leaderboard
-[cite_start]*High-level performance summary across the 7 core tasks.* [cite: 584]
+*High-level performance summary across the 7 core tasks.*
 
 <div align="center">
 
@@ -76,7 +76,7 @@
 ---
 
 ### 📊 Comprehensive Metrics Breakdown
-*Detailed performance analysis across all 27 indicators. [cite_start]**Bold values** indicate the best performance.* [cite: 584]
+*Detailed performance analysis across all 27 indicators. **Bold values** indicate the best performance.*
 
 <div align="center">
 
