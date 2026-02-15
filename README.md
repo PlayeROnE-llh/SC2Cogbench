@@ -2,13 +2,6 @@
 
 # SC2-CogBench
 ### Benchmarking Cognitive Strategic Reasoning in Large Language Models through StarCraft II
-
-**[Anonymous Authors]**
-
-[![Paper](https://img.shields.io/badge/Paper-Under_Review-fire)](https://arxiv.org/abs/2026.xxxxx)
-[![Dataset](https://img.shields.io/badge/Dataset-HuggingFace-yellow)](https://huggingface.co/datasets/SC2CogBench)
-[![License](https://img.shields.io/badge/License-CC%20BY--NC%204.0-blue)](LICENSE)
-
 </div>
 
 ---
@@ -31,10 +24,10 @@ Unlike existing benchmarks that focus on simple micro-management or end-to-end o
 
 ## 🏗️ Data Construction
 
-The dataset captures the authentic, high-stakes adversarial dynamics of elite human competition. We constructed **150 evaluation instances** with semantically grounded human expert annotations.
+[cite_start]The dataset captures the authentic, high-stakes adversarial dynamics of elite human competition[cite: 56, 84, 117]. [cite_start]We constructed **150 evaluation instances** with semantically grounded human expert annotations[cite: 63, 291].
 
-* **Source:** 174 raw matches from 2025 Tier-S Tournaments (EWC & DreamHack).
-* **Annotation:** A hybrid protocol involving **7 human experts** and an **XGBoost-based Win-Rate Model** for objective grounding.
+* [cite_start]**Source:** 174 raw matches from 2025 Tier-S Tournaments (EWC & DreamHack)[cite: 63].
+* [cite_start]**Annotation:** A hybrid protocol involving **7 human experts** and an **XGBoost-based Win-Rate Model** for objective grounding[cite: 262].
 
 <br>
 <div align="center">
@@ -48,12 +41,12 @@ The dataset captures the authentic, high-stakes adversarial dynamics of elite hu
 
 ## 🏆 Leaderboard & Analysis
 
-We evaluated **6 frontier LLMs** (GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek-V3, Qwen 3, Kimi K2). Our extensive experiments reveal that **no single model successfully masters the complete perception-prediction-inference loop**.
+We evaluated **6 frontier LLMs** (GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek-V3, Qwen 3, Kimi K2). [cite_start]Our extensive experiments reveal that **no single model successfully masters the complete perception-prediction-inference loop**[cite: 65, 198].
 
 ### 🧠 Capability Overview
-* **Gemini 3 Pro** excels at predictive reasoning and situational awareness.
-* **GPT-5** performs best in high-level strategic inference and execution.
-* **DeepSeek-V3** demonstrates strong granular perception in combat scenarios.
+* [cite_start]**Gemini 3 Pro** excels at predictive reasoning and situational awareness[cite: 567].
+* [cite_start]**GPT-5** performs best in high-level strategic inference and execution[cite: 199].
+* [cite_start]**DeepSeek-V3** demonstrates strong granular perception in combat scenarios[cite: 498].
 
 <br>
 <div align="center">
@@ -66,6 +59,8 @@ We evaluated **6 frontier LLMs** (GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek
 ### 🥇 Summary Leaderboard
 *High-level performance summary across the 7 core tasks.*
 
+<div align="center">
+
 | Task | Metric | **GPT-5** | **Gemini 3 Pro** | **Claude 4** | **DeepSeek-V3** | **Qwen 3** | **Kimi K2** |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **KEI** | *F1-Score* | **0.480** | 0.197 | 0.260 | 0.347 | 0.347 | 0.350 |
@@ -76,10 +71,14 @@ We evaluated **6 frontier LLMs** (GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek
 | **ICD** | *EIY* | 6.25 | **18.80** | 10.70 | 6.04 | 7.47 | 11.00 |
 | **SAP** | *PSR* | **66.64** | 61.60 | 56.32 | 57.72 | 49.88 | 43.92 |
 
+</div>
+
 ---
 
 ### 📊 Comprehensive Metrics Breakdown
-*Detailed performance analysis across all 27 indicators. **Bold values** indicate the best performance.*
+[cite_start]*Detailed performance analysis across all 27 indicators[cite: 490]. **Bold values** indicate the best performance.*
+
+<div align="center">
 
 #### 👁️ Perception Layer
 *Evaluates situational awareness, event filtration, and state abstraction.*
@@ -104,6 +103,8 @@ We evaluated **6 frontier LLMs** (GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek
 | | TPC | 0.801 | **0.942** | 0.897 | 0.835 | 0.658 | 0.412 |
 | | SPC | 0.794 | **0.915** | 0.883 | 0.812 | 0.621 | 0.387 |
 
+<br>
+
 #### 🔮 Prediction Layer
 *Assess the capacity for forward-looking reasoning and outcome forecasting.*
 
@@ -124,6 +125,8 @@ We evaluated **6 frontier LLMs** (GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek
 | | BAS $\downarrow$ | 0.155 | **0.131** | 0.152 | 0.211 | 0.233 | 0.167 |
 | | WCE $\downarrow$ | 0.242 | **0.214** | 0.240 | 0.286 | 0.312 | 0.247 |
 
+<br>
+
 #### 🧠 Strategy Inference Layer
 *Reasoning about latent intent and policy selection.*
 
@@ -137,6 +140,8 @@ We evaluated **6 frontier LLMs** (GPT-5, Gemini 3 Pro, Claude 4 Sonnet, DeepSeek
 | | Precision | **0.273** | 0.254 | 0.222 | 0.235 | 0.198 | 0.160 |
 | | Recall | **0.219** | 0.195 | 0.177 | 0.178 | 0.151 | 0.135 |
 | | **PSR** | **0.94** | 0.88 | 0.82 | 0.84 | 0.74 | 0.66 |
+
+</div>
 
 ---
 
