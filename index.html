@@ -227,16 +227,15 @@
             Object.keys(TASK_GROUPS).forEach(groupKey => {
                 const group = TASK_GROUPS[groupKey];
                 const metrics = Object.keys(METRIC_META).filter(m => METRIC_META[m].group === groupKey);
-                const summaryMetric = metrics.find(m => METRIC_META[m].isSummary);
                 const subMetrics = metrics.filter(m => !METRIC_META[m].isSummary);
                 
                 const isExpanded = state.expandedTasks.has(groupKey) || state.viewMode === 'detailed';
                 
                 headHTML += `
                     <th class="px-4 py-3 cursor-pointer hover:bg-slate-100 transition border-l border-slate-200 group relative ${group.color}"
-                        onclick="toggleTask('${groupKey}')" colspan="${isExpanded ? 1 : 1}">
+                        onclick="toggleTask('${groupKey}')">
                         <div class="flex items-center justify-between">
-                            <span>${groupKey} <span class="opacity-60 text-[10px] ml-1">${summaryMetric ? METRIC_META[summaryMetric.name] || summaryMetric.name : ''}</span></span>
+                            <span>${groupKey}</span>
                             <i class="fas fa-chevron-${isExpanded ? 'left' : 'right'} text-xs opacity-50"></i>
                         </div>
                     </th>
